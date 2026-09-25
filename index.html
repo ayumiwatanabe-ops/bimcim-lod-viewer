@@ -124,6 +124,7 @@
   .minfo{display:flex;flex-direction:column;gap:6px;font-size:12px}
   .minfo .ref{color:var(--muted);font-size:11.5px}
   .minfo ul{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px}
+  @media (max-width:600px){ header h1 small{display:none} header{gap:8px 12px;padding:8px 12px} }
   @media (max-width:900px){
     main{grid-template-columns:1fr;grid-template-rows:minmax(360px,55vh) auto}
     aside{border-left:0;border-top:1px solid var(--line)}
@@ -277,6 +278,14 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 let MODEL = null, AL = null;   // 選択中モデルの model.json と線形
+// オフライン版 (build_offline.py) では window.__BIMCIM_EMBED に全ファイルを埋め込む。無ければ通常の fetch
+const EMBED = window.__BIMCIM_EMBED || null;
+async function loadJSON(url){ if (EMBED && EMBED[url] !== undefined) return EMBED[url]; const r = await fetch(url); if (!r.ok) throw new Error(url); return await r.json(); }
+async function loadBuffer(url){
+  if (EMBED && EMBED[url] !== undefined){ const bin = atob(EMBED[url]); const u8 = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i); return u8.buffer; }
+  const r = await fetch(url); if (!r.ok) throw new Error(url); return await r.arrayBuffer();
+}
+function assetURL(url){ return (EMBED && EMBED[url + ':uri']) || url; }
 const ORDER = ["地形","道路","土工","線形","概略形状","坑口位置","本体","上部工","下部工","基礎","覆工","吹付け","インバート","法面","本体","記号","坑門工","舗装","内空設備","排水工","箱抜き","管路部","特殊部","地上機器","ウイング","取付水路","かご工","鋼製支保工","ロックボルト","防水工","内装工","配筋","PC鋼材","支承","附属物","法枠工","鉄筋挿入工","法面工","防護柵","引込管","管路 (条別)","附属","目地","裏込め","防水","補助工法","出来形","完成設備"];
 
 // ---------- three.js ----------
@@ -330,17 +339,17 @@ applyZoom();
 //  ・1イベントの deltaY は ±1ノッチに丸める (高速ホイール・トラックパッドで一気に飛ばない)
 //  ・寄る点: ピボット「固定」なら回転中心、それ以外はカーソル下の点。その点を画面上で動かさずに拡大縮小する
 //  ・毎フレーム 30% ずつ適用して滑らかにする。近づきすぎ (0.6m) と遠ざかりすぎ (2000m) を制限
-controls.enableZoom = false;
+controls.enableZoom = true;                 // タッチのピンチ操作は OrbitControls に任せる
 let zoomAccum = 0; const zoomPoint = new THREE.Vector3();
-canvas.addEventListener('wheel', ev=>{
-  ev.preventDefault();
+canvas.addEventListener('wheel', ev=>{      // ホイールは capture で先取りして OrbitControls には渡さない
+  ev.preventDefault(); ev.stopImmediatePropagation();
   const unit = ev.deltaMode === 1 ? 3 : (ev.deltaMode === 2 ? 1 : 100);
   const notch = Math.max(-1, Math.min(1, ev.deltaY / unit));
   if (!notch) return;
   if (RAD[radIdx] === 'fixed' || !current) zoomPoint.copy(controls.target);
   else { const hit = pick(ev); zoomPoint.copy(hit ? hit.point : controls.target); }
   zoomAccum = Math.max(-3, Math.min(3, zoomAccum + notch * ZOOM[zoomIdx]));
-}, {passive:false});
+}, {passive:false, capture:true});
 function stepZoom(){
   if (Math.abs(zoomAccum) < 1e-4){ zoomAccum = 0; return; }
   let a = zoomAccum * 0.3; zoomAccum -= a;
@@ -598,7 +607,7 @@ async function showLOD(lod){
     cache[key] = (async ()=>{
       let buf = null;
       for (const url of [`models/${MODEL.id}/LOD${lod}.glb`, `models/${MODEL.id}/LOD${lod}.wasm`]){
-        try { const r = await fetch(url); if (r.ok){ buf = await r.arrayBuffer(); sizes[key] = buf.byteLength; break; } } catch(e){}
+        try { buf = await loadBuffer(url); sizes[key] = buf.byteLength; break; } catch(e){}
       }
       if (!buf) throw new Error('not found');
       return new Promise((res,rej)=>loader.parse(buf, '', g=>res(g.scene), rej));
@@ -751,19 +760,19 @@ let INDEX = [];
 function showEntrance(on){ entrance.hidden = !on; }
 document.getElementById('pickModel').addEventListener('click', ()=>{ showEntrance(true); });
 async function loadIndex(){
-  try{ INDEX = await (await fetch('models/index.json')).json(); }catch(e){ INDEX = []; }
+  try{ INDEX = await loadJSON('models/index.json'); }catch(e){ INDEX = []; }
   cards.innerHTML = '';
   INDEX.forEach(m=>{
     const b = document.createElement('button'); b.type = 'button'; b.className = 'card';
-    b.innerHTML = `<img alt="" src="models/${m.id}/thumb.jpg" loading="lazy">${m.wip ? '<span class="wip">試作中</span>' : ''}<div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
+    b.innerHTML = `<img alt="" src="${assetURL(`models/${m.id}/thumb.jpg`)}" loading="lazy">${m.wip ? '<span class="wip">試作中</span>' : ''}<div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
     b.addEventListener('click', ()=>{ location.hash = m.id; });
     cards.appendChild(b);
   });
 }
 async function loadModel(id){
   let mj, sj;
-  try{ mj = await (await fetch(`models/${id}/model.json`)).json(); }catch(e){ status.textContent = `モデル ${id} を読み込めませんでした`; return; }
-  try{ sj = await (await fetch(`models/${id}/summary.json`)).json(); }catch(e){ sj = null; }
+  try{ mj = await loadJSON(`models/${id}/model.json`); }catch(e){ status.textContent = `モデル ${id} を読み込めませんでした`; return; }
+  try{ sj = await loadJSON(`models/${id}/summary.json`); }catch(e){ sj = null; }
   MODEL = mj; AL = mj.alignment; summary = sj;
   document.getElementById('modelTitle').innerHTML = mj.name + (mj.wip ? '<span class="wip">試作中</span>' : ''); document.getElementById('modelSub').textContent = `${mj.category} / 詳細度別サンプル — ` + (mj.description || '');
   document.getElementById('modelInfo').innerHTML = `<div class="ref">${mj.ref || ''}</div>` + (mj.notes && mj.notes.length ? '<ul>' + mj.notes.map(n=>`<li>${n}</li>`).join('') + '</ul>' : '');

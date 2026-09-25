@@ -22,6 +22,17 @@
 各モデルは `models/<ID>/` に `LOD100.glb` 〜 `LOD500.glb`、`model.json` (線形・視点・定義文)、`summary.json` (部材一覧)、`thumb.jpg` を持ちます。
 IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases) に zip で添付しています。
 
+## 入手方法 (お客様向け)
+
+| 方法 | 入手先 | 用途 |
+|---|---|---|
+| Web版 | `https://<ユーザー名>.github.io/bimcim-lod-viewer/` | PC・スマホ・タブレットでそのまま閲覧 (要インターネット) |
+| オフライン版 (1ファイル) | [Releases](../../releases) の `bimcim-lod-viewer_offline.html` (約50MB) | ダブルクリックで開く。ネット接続不要。会議室・現場向け |
+| モデルデータ | [Releases](../../releases) の `<工種ID>_ifc_dxf_obj.zip` | IFC4 / DXF / OBJ を自社のCIMソフトで開く |
+| ソース一式 | 「Code → Download ZIP」 | 開発者向け。`python -m http.server` でローカル起動、スクリプトで再生成 |
+
+操作説明書は `docs/` にあります (お客様向け / 社内向け)。スマホ・タブレットは1本指で回転、2本指でピンチ・移動です。
+
 ## ビューアの使い方
 
 * 入口画面で工種を選ぶ (URL は `index.html#tunnel` のように `#ID` で直接開けます)
@@ -43,7 +54,9 @@ models/index.json     工種一覧
 models/<ID>/          各工種のモデル (GLB, model.json, summary.json, thumb.jpg, view_LOD300/400.png)
 scripts/lodkit.py     共通ライブラリ (線形・メッシュ・書き出し)
 scripts/gen_*.py      工種別の生成スクリプト
-scripts/build_index.py, build_pages.py, render_thumbs.py
+scripts/build_index.py, build_pages.py, render_thumbs.py, build_offline.py (オフライン版), build_manuals.py (説明書)
+scripts/vendor/      three.js (オフライン版に同梱)
+docs/                操作説明書 (docx / pdf)
 ```
 
 ## ローカルで動かす / 再生成する
@@ -53,9 +66,10 @@ python -m http.server 8000        # → http://localhost:8000/
 ```
 
 ```bash
-pip install numpy ezdxf ifcopenshell trimesh networkx
-python scripts/gen_tunnel.py .    # 各 gen_*.py を実行すると models/<ID>/ に書き出し
+pip install numpy ezdxf ifcopenshell trimesh networkx python-docx
+python scripts/gen_tunnel.py .          # 各 gen_*.py を実行すると models/<ID>/ に書き出し
 python scripts/build_index.py .
+python scripts/build_offline.py . release/bimcim-lod-viewer_offline.html   # オフライン版 (1ファイル)
 ```
 
 `gen_*.py` 冒頭のパラメータ (断面・延長・配置) を書き換えれば別条件のサンプルを同じ手順で出力できます。GLB/OBJ は Y-up、DXF/IFC は Z-up です。
