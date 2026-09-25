@@ -114,7 +114,7 @@
         <div class="row">
           <button type="button" id="wire" aria-pressed="false">ワイヤーフレーム</button>
           <button type="button" id="ghost" aria-pressed="false">覆工を透過</button>
-          <button type="button" id="orbitDir" aria-pressed="true" title="ON: AutoCAD と同じ向き (ドラッグ方向にカメラが動く) / OFF: モデルを掴んで回す向き">回転: AutoCAD風</button>
+          <button type="button" id="orbitDir" aria-pressed="true" title="ON: AutoCAD と同じ向き (ドラッグした方向にモデルが回る) / OFF: 反転 (ドラッグした方向にカメラが動く)">回転: AutoCAD風</button>
         </div>
       </div>
       <div class="status" id="status">読み込み中…</div>
@@ -158,7 +158,7 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
-      <p class="note">操作: ドラッグで回転（AutoCAD と同じ向き。「回転: AutoCAD風」OFF でモデルを掴んで回す向き）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。回転中はオレンジの玉が回転中心を示します。</p>
+      <p class="note">操作: ドラッグで回転（AutoCAD と同じく、ドラッグした方向にモデルが回ります。「回転: AutoCAD風」OFF で逆向き）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。回転中はオレンジの玉が回転中心を示します。</p>
       <p class="note"><b>回転中心の置き方</b>: 「クリックで指定」を押してから部材をクリック、または「測点 No.○ に置く」「トンネル中央」ボタン、またはダブルクリック。オレンジの玉と地面への垂線が現在の回転中心です。ピボットを「固定」にしておくと、置いた回転中心はドラッグやホイールで動きません。</p>
       <p class="note"><b>迷子になったら</b>: 「トンネル中央」→「中心へ寄る」で回転中心の 30 m 手前に戻れます。「全景」でも最初の視点に戻ります。回転感度は 6 段階、ピボットは固定 / 自動 / 1〜150 m の 6 段階です。</p>
     </aside>
@@ -206,7 +206,7 @@ const orbitBtn = document.getElementById('orbitDir');
 try{ if (localStorage.getItem('tunnel-orbit-acad') === '0') orbitBtn.setAttribute('aria-pressed','false'); }catch(e){}
 function applySens(){
   const acad = orbitBtn.getAttribute('aria-pressed') === 'true';
-  controls.rotateSpeed = (acad ? -1 : 1) * SENS[sensIdx];
+  controls.rotateSpeed = (acad ? 1 : -1) * SENS[sensIdx];   // AutoCAD風 = モデルを掴んで回す向き (three.js 標準と同じ)。OFF で反転
   try{ localStorage.setItem('tunnel-orbit-acad', acad ? '1' : '0'); localStorage.setItem('tunnel-sens', String(sensIdx + 1)); }catch(e){}
   document.querySelectorAll('#sensSeg button').forEach((b,i)=>b.setAttribute('aria-pressed', String(i === sensIdx)));
 }
