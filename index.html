@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} [hidden]{display:none!important}</style>
+<title>山岳トンネル詳細度ビューア</title>
+<meta name="description" content="国交省BIM/CIM活用ガイドラインの詳細度100〜500を、汎用トンネルの3Dモデルで切り替えて確認できるビューア">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --bg:#E9ECEF; --panel:#FFFFFF; --panel2:#F3F5F7; --line:#D3D8DE; --text:#1E262E; --muted:#5C6873;
+    --accent:#D9661C; --accent-ink:#FFFFFF; --chip:#E4E8EC; --focus:#2B6CB0;
+    --lod100:#3D7DD6; --lod200:#2A9D8F; --lod300:#5DA33E; --lod400:#E0891B; --lod500:#C7423B;
+    --canvas-bg:#CED4DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#14181C; --panel:#1E2429; --panel2:#262D33; --line:#343C44; --text:#E6EAEE; --muted:#9AA5B0;
+      --accent:#F08A3A; --accent-ink:#141414; --chip:#2E363D; --focus:#79A9F0; --canvas-bg:#2A3138; color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#14181C; --panel:#1E2429; --panel2:#262D33; --line:#343C44; --text:#E6EAEE; --muted:#9AA5B0;
+    --accent:#F08A3A; --accent-ink:#141414; --chip:#2E363D; --focus:#79A9F0; --canvas-bg:#2A3138; color-scheme:dark;
+  }
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;font-size:14px;line-height:1.55}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+  .app{display:grid;grid-template-rows:auto 1fr;height:100%;min-height:0}
+  header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+  header h1{font-size:16px;font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance}
+  header h1 small{display:block;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.06em}
+  .seg{display:flex;gap:4px;padding:3px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;flex-wrap:wrap}
+  .seg button{border:0;background:transparent;color:var(--text);padding:6px 12px;border-radius:6px;font:inherit;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .seg button .dot{width:10px;height:10px;border-radius:50%;background:var(--c)}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+  .seg button:focus-visible,.tools button:focus-visible,input:focus-visible,label:focus-within{outline:2px solid var(--focus);outline-offset:2px}
+  main{display:grid;grid-template-columns:1fr 360px;min-height:0;height:100%}
+  .stage{position:relative;min-height:360px;background:var(--canvas-bg)}
+  canvas{display:block;width:100%;height:100%}
+  .tools{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px}
+  .tools .row{display:flex;gap:6px;flex-wrap:wrap}
+  .tools button{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer}
+  .tools button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .clip{position:absolute;left:12px;right:12px;bottom:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .clip label{display:flex;align-items:center;gap:8px;font-size:12px;white-space:nowrap}
+  .clip input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
+  .status{position:absolute;right:12px;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted)}
+  aside{background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px;min-height:0}
+  .lodhead{display:flex;align-items:baseline;gap:10px}
+  .lodhead .n{font-size:30px;font-weight:700;line-height:1;color:var(--c)}
+  .lodhead .t{font-size:13px;color:var(--muted)}
+  .def{background:var(--panel2);border-radius:8px;padding:10px 12px;font-size:12.5px}
+  .def b{display:block;font-size:11px;letter-spacing:.08em;color:var(--muted);margin-bottom:3px}
+  .def p{margin:0 0 8px}
+  .def p:last-child{margin:0}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .stat{padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+  .stat b{display:block;font-size:11px;color:var(--muted);font-weight:500}
+  .stat span{font-size:16px;font-weight:500}
+  h2{font-size:12px;letter-spacing:.08em;color:var(--muted);margin:4px 0 0;font-weight:500}
+  .group{border-top:1px solid var(--line);padding-top:8px}
+  .group summary{cursor:pointer;font-weight:500;display:flex;justify-content:space-between;align-items:center;list-style:none}
+  .group summary::-webkit-details-marker{display:none}
+  .group summary .cnt{font-size:11px;color:var(--muted)}
+  .item{display:flex;gap:8px;align-items:flex-start;padding:4px 0 4px 4px;font-size:12.5px}
+  .item input{margin-top:3px;accent-color:var(--accent)}
+  .item .sw{width:10px;height:10px;border-radius:2px;margin-top:5px;flex:none;border:1px solid rgba(0,0,0,.15)}
+  .item .nm{flex:1}
+  .item .new{font-size:10px;padding:0 5px;border-radius:999px;background:var(--chip);color:var(--muted);white-space:nowrap;margin-top:2px}
+  .note{font-size:11.5px;color:var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--muted)}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  @media (max-width:900px){
+    main{grid-template-columns:1fr;grid-template-rows:minmax(360px,55vh) auto}
+    aside{border-left:0;border-top:1px solid var(--line)}
+  }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <h1>山岳トンネル 詳細度ビューア<small>BIM/CIM活用ガイドライン(案) 表1-2「山岳トンネルの例」に対応した汎用サンプル</small></h1>
+    <div class="seg" role="group" aria-label="詳細度">
+      <button type="button" data-lod="100" style="--c:var(--lod100)"><span class="dot"></span>詳細度100</button>
+      <button type="button" data-lod="200" style="--c:var(--lod200)"><span class="dot"></span>200</button>
+      <button type="button" data-lod="300" style="--c:var(--lod300)"><span class="dot"></span>300</button>
+      <button type="button" data-lod="400" style="--c:var(--lod400)"><span class="dot"></span>400</button>
+      <button type="button" data-lod="500" style="--c:var(--lod500)"><span class="dot"></span>500</button>
+    </div>
+  </header>
+  <main>
+    <div class="stage">
+      <canvas id="c"></canvas>
+      <div class="tools">
+        <div class="row">
+          <button type="button" data-view="all">全景</button>
+          <button type="button" data-view="portal">坑口</button>
+          <button type="button" data-view="inside">内部</button>
+          <button type="button" data-view="section">断面</button>
+        </div>
+        <div class="row">
+          <button type="button" id="wire" aria-pressed="false">ワイヤーフレーム</button>
+          <button type="button" id="ghost" aria-pressed="false">覆工を透過</button>
+        </div>
+      </div>
+      <div class="status" id="status">読み込み中…</div>
+      <div class="clip">
+        <label><input type="checkbox" id="clipOn"> 断面カット</label>
+        <label style="flex:1">位置 <input type="range" id="clipPos" min="0" max="240" step="1" value="120"> <span class="mono" id="clipLbl">No.120</span></label>
+        <label><input type="checkbox" id="clipDir"> 反転</label>
+      </div>
+    </div>
+    <aside>
+      <div class="lodhead"><span class="n" id="lodN">300</span><span class="t" id="lodT"></span></div>
+      <div class="def">
+        <b>共通定義</b><p id="defCommon"></p>
+        <b>山岳トンネルのモデル化</b><p id="defTunnel"></p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>部材数</b><span class="mono" id="stParts">-</span></div>
+        <div class="stat"><b>三角形数</b><span class="mono" id="stTris">-</span></div>
+        <div class="stat"><b>GLBサイズ</b><span class="mono" id="stSize">-</span></div>
+      </div>
+      <h2>モデルに含まれる要素（クリックで表示/非表示）</h2>
+      <div id="list"></div>
+      <div class="legend">
+        <span><i style="background:#8CCB8C"></i>DⅠ区間</span><span><i style="background:#F2D973"></i>DⅡ区間</span><span><i style="background:#F28C73"></i>DⅢa区間</span>
+        <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
+      </div>
+      <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
+      <p class="note">操作: ドラッグで回転、ホイールで拡大縮小、右ドラッグで移動。</p>
+    </aside>
+  </main>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+const DEF = {
+  100:["対象を記号や線、単純な形状でその位置を示したモデル。","対象構造物の位置を示すモデル。トンネルの配置が分かる程度の矩形形状若しくは線状のモデル。","位置"],
+  200:["対象の構造形式が分かる程度のモデル。標準横断で切土・盛土を表現、又は各構造物一般図に示される標準横断面を対象範囲でスイープさせて作成する程度の表現。","構造形式が確認できる程度の形状。計画道路の中心線形とトンネル標準横断面でモデル化。坑口部はモデル化せず位置を示す。","構造形式"],
+  300:["附帯工等の細部構造、接続部構造を除き、対象の外形形状を正確に表現したモデル。","主構造の形状が正確なモデル。避難通路などの拡幅部の形状をモデル化。適用支保パターンの範囲を記号等で、補助工法は対象工法をパターン化し記号等で必要範囲をモデル化。坑口部は外形寸法を正確にモデル化。舗装構成や排水工等の内空設備をモデル化。箱抜き位置は形状をパターン化し、記号等で設置範囲を示す。","外形形状"],
+  400:["詳細度300に加えて、附帯工、接続構造などの細部構造及び配筋も含めて、正確にモデル化する。","詳細度300に加えてロックボルトや配筋を含む全てをモデル化。トンネル本体や坑口部、箱抜き部の配筋、内装板、支保パターン、補助工法の形状の正確なモデル。","細部・配筋"],
+  500:["対象の現実の形状を表現したモデル。","設計・施工段階で活用したモデルに完成形状を反映したモデル。","完成形状"],
+};
+const ORDER = ["線形","概略形状","坑口位置","本体","覆工","吹付け","インバート","記号","坑門工","舗装","内空設備","排水工","箱抜き","鋼製支保工","ロックボルト","防水工","内装工","配筋","補助工法","出来形","完成設備"];
+
+// ---------- three.js ----------
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.localClippingEnabled = false;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 5000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a80, 1.2));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(-80, -120, 160); scene.add(sun);
+const sun2 = new THREE.DirectionalLight(0xffffff, 0.5); sun2.position.set(120, 100, 60); scene.add(sun2);
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(900, 900), new THREE.MeshLambertMaterial({color:0x9fb08a}));
+ground.position.set(120, 30, -2.3); scene.add(ground);
+const grid = new THREE.GridHelper(600, 60, 0x777777, 0xaaaaaa); grid.rotation.x = Math.PI/2; grid.position.set(120, 30, -2.25); scene.add(grid);
+scene.up.set(0,0,1); camera.up.set(0,0,1);
+
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h){ renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
+}
+function bgColor(){ return getComputedStyle(document.documentElement).getPropertyValue('--canvas-bg').trim(); }
+function tick(){ resize(); scene.background = new THREE.Color(bgColor()); controls.update(); renderer.render(scene, camera); requestAnimationFrame(tick); }
+tick();
+
+// alignment (same as generator): straight 60 / R=500 curve 120 / straight 60, grade 1%
+function frame(s){
+  const s1=60, lc=120, R=500; let x,y,phi;
+  if (s<=s1){x=s;y=0;phi=0;}
+  else if (s<=s1+lc){const d=s-s1; phi=d/R; x=s1+R*Math.sin(phi); y=R*(1-Math.cos(phi));}
+  else {phi=lc/R; const d=s-s1-lc; x=s1+R*Math.sin(phi)+d*Math.cos(phi); y=R*(1-Math.cos(phi))+d*Math.sin(phi);}
+  return {p:new THREE.Vector3(x,y,0.01*s), t:new THREE.Vector3(Math.cos(phi),Math.sin(phi),0), r:new THREE.Vector3(Math.sin(phi),-Math.cos(phi),0)};
+}
+function lookAt(pos, tgt){ camera.position.copy(pos); controls.target.copy(tgt); controls.update(); }
+const VIEWS = {
+  all:   ()=>lookAt(new THREE.Vector3(-70,-120,80), new THREE.Vector3(110,15,0)),
+  portal:()=>lookAt(new THREE.Vector3(-30,-16,10), new THREE.Vector3(10,1,3)),
+  inside:()=>lookAt(new THREE.Vector3(62,0.5,2), new THREE.Vector3(130,8,2.5)),
+  section:()=>{ const f=frame(120); clipOn.checked=true; clipPos.value=120; applyClip();
+    lookAt(f.p.clone().add(f.t.clone().multiplyScalar(26)).add(f.r.clone().multiplyScalar(-14)).add(new THREE.Vector3(0,0,10)), f.p.clone().add(new THREE.Vector3(0,0,2.5))); },
+};
+VIEWS.all();
+document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>VIEWS[b.dataset.view]()));
+
+// clipping
+const clipOn=document.getElementById('clipOn'), clipPos=document.getElementById('clipPos'), clipDir=document.getElementById('clipDir'), clipLbl=document.getElementById('clipLbl');
+const plane = new THREE.Plane(new THREE.Vector3(-1,0,0), 0);
+function applyClip(){
+  clipLbl.textContent = 'No.'+clipPos.value;
+  if (!clipOn.checked){ renderer.clippingPlanes = []; return; }
+  const f = frame(+clipPos.value); const n = f.t.clone().multiplyScalar(clipDir.checked?1:-1);
+  plane.setFromNormalAndCoplanarPoint(n, f.p); renderer.clippingPlanes = [plane];
+}
+[clipOn,clipPos,clipDir].forEach(e=>e.addEventListener('input',applyClip)); applyClip();
+
+// ---------- model loading ----------
+const loader = new GLTFLoader();
+let current = null, currentLOD = null; const cache = {}; const sizes = {};
+let summary = null;
+fetch('model_summary.json').then(r=>r.json()).then(j=>{summary=j;}).catch(()=>{});
+const status = document.getElementById('status');
+const wireBtn=document.getElementById('wire'), ghostBtn=document.getElementById('ghost');
+wireBtn.addEventListener('click',()=>{wireBtn.setAttribute('aria-pressed', wireBtn.getAttribute('aria-pressed')!=='true'); applyStyle();});
+ghostBtn.addEventListener('click',()=>{ghostBtn.setAttribute('aria-pressed', ghostBtn.getAttribute('aria-pressed')!=='true'); applyStyle();});
+function applyStyle(){
+  if(!current) return; const wire = wireBtn.getAttribute('aria-pressed')==='true', ghost = ghostBtn.getAttribute('aria-pressed')==='true';
+  current.traverse(o=>{ if(!o.isMesh) return; const m=o.material; m.wireframe=wire;
+    const cat = o.userData.cat; const isShell = ['覆工','本体','吹付け','防水工','内装工','出来形','概略形状'].includes(cat);
+    if (ghost && isShell){ m.transparent=true; m.opacity=0.18; m.depthWrite=false; }
+    else { m.transparent = o.userData.baseAlpha<1; m.opacity=o.userData.baseAlpha; m.depthWrite = o.userData.baseAlpha>=1; }
+  });
+}
+
+async function showLOD(lod){
+  currentLOD = lod;
+  document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed', String(+b.dataset.lod===lod)));
+  const d = DEF[lod]; document.getElementById('lodN').textContent=lod; document.getElementById('lodN').style.setProperty('--c',`var(--lod${lod})`);
+  document.getElementById('lodT').textContent = d[2]; document.getElementById('defCommon').textContent=d[0]; document.getElementById('defTunnel').textContent=d[1];
+  try{ localStorage.setItem('tunnel-lod', String(lod)); }catch(e){}
+  status.textContent = `詳細度${lod} を読み込み中…`;
+  if (current){ scene.remove(current); current=null; }
+  if (!cache[lod]){
+    // 公開版では GLB を .wasm 拡張子で同梱している (バイナリのまま配信できる拡張子のため)。ローカルでは .glb を試す。
+    cache[lod] = (async ()=>{
+      let buf = null;
+      for (const url of [`LOD${lod}/tunnel_LOD${lod}.glb`, `LOD${lod}/tunnel_LOD${lod}.wasm`]){
+        try { const r = await fetch(url); if (r.ok){ buf = await r.arrayBuffer(); sizes[lod] = buf.byteLength; break; } } catch(e){}
+      }
+      if (!buf) throw new Error('not found');
+      return new Promise((res,rej)=>loader.parse(buf, '', g=>res(g.scene), rej));
+    })();
+  }
+  let root;
+  try { root = await cache[lod]; } catch(e){ status.textContent = `詳細度${lod} のモデルを読み込めませんでした`; return; }
+  if (currentLOD !== lod) return;
+  root.traverse(o=>{ if(o.isMesh){ const nm = (o.name || o.parent?.name || ''); const [cat, name] = nm.includes('|') ? nm.split('|') : ['その他', nm];
+      o.userData.cat=cat; o.userData.name=name; o.material = o.material.clone(); o.material.side = THREE.DoubleSide;
+      o.userData.baseAlpha = o.material.opacity ?? 1; } });
+  root.rotation.x = Math.PI/2;   // GLB は Y-up で保存 → Z-up のシーンへ戻す
+  current = root; scene.add(root); applyStyle(); buildList(root, lod);
+  let tris=0; root.traverse(o=>{ if(o.isMesh) tris += (o.geometry.index? o.geometry.index.count : o.geometry.attributes.position.count)/3; });
+  const parts = summary?.lods?.[lod]; document.getElementById('stParts').textContent = parts ? parts.length : '-';
+  const sumTris = parts ? parts.reduce((a,p)=>a+(p.tris||0),0) : 0;
+  document.getElementById('stTris').textContent = (sumTris || tris).toLocaleString('ja-JP');
+  status.textContent = `詳細度${lod} を表示中`;
+  document.getElementById('stSize').textContent = sizes[lod] ? (sizes[lod]/1048576).toFixed(1)+' MB' : '-';
+}
+
+function buildList(root, lod){
+  const list = document.getElementById('list'); list.innerHTML='';
+  const groups = {};
+  root.traverse(o=>{ if(o.isMesh){ (groups[o.userData.cat] ||= []).push(o); } });
+  const cats = Object.keys(groups).sort((a,b)=>(ORDER.indexOf(a)+1||99)-(ORDER.indexOf(b)+1||99));
+  const info = {}; (summary?.lods?.[lod]||[]).forEach(p=>info[p.name]=p);
+  for (const cat of cats){
+    const det = document.createElement('details'); det.className='group'; det.open = true;
+    const sum = document.createElement('summary'); sum.innerHTML = `<span>${cat}</span><span class="cnt">${groups[cat].length}</span>`; det.appendChild(sum);
+    groups[cat].forEach((o,i)=>{
+      const id = `it-${lod}-${cat}-${i}`;
+      const row = document.createElement('label'); row.className='item'; row.htmlFor=id;
+      const c = o.material.color; const sw = `rgb(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)})`;
+      const first = info[o.userData.name]?.first_lod; const tag = (first && first===lod && lod>100) ? `<span class="new">詳細度${lod}で追加</span>` : '';
+      row.innerHTML = `<input type="checkbox" id="${id}" checked><span class="sw" style="background:${sw}"></span><span class="nm">${o.userData.name}</span>${tag}`;
+      row.querySelector('input').addEventListener('change', e=>{ o.visible = e.target.checked; });
+      row.title = info[o.userData.name]?.note || '';
+      det.appendChild(row);
+    });
+    list.appendChild(det);
+  }
+}
+
+document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>showLOD(+b.dataset.lod)));
+let start = 300; try{ const v = +localStorage.getItem('tunnel-lod'); if ([100,200,300,400,500].includes(v)) start = v; }catch(e){}
+showLOD(start);
+</script>
+
+</body>
+</html>
