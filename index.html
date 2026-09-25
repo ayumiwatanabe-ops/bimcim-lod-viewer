@@ -39,23 +39,37 @@
   main{display:grid;grid-template-columns:1fr 360px;min-height:0;height:100%}
   .stage{position:relative;min-height:360px;background:var(--canvas-bg)}
   canvas{display:block;width:100%;height:100%}
-  .tools{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:6px}
-  .tools .row{display:flex;gap:6px;flex-wrap:wrap}
-  .tools button{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;font-size:12px;cursor:pointer}
-  .tools button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-  .clip{position:absolute;left:12px;right:12px;bottom:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 12px;display:flex;flex-direction:column;gap:6px}
-  .clip .bar{display:flex;gap:12px 18px;align-items:center;flex-wrap:wrap}
-  .clip label{display:flex;align-items:center;gap:8px;font-size:12px;white-space:nowrap}
-  .clip input[type=range]{flex:1;min-width:140px;accent-color:var(--accent)}
-  .opt{display:flex;align-items:center;gap:8px;font-size:12px;white-space:nowrap}
-  .seg2{display:inline-flex;gap:2px;padding:2px;background:var(--panel2);border:1px solid var(--line);border-radius:6px}
-  .seg2 button{border:0;background:transparent;color:var(--text);font:inherit;font-size:12px;min-width:30px;padding:3px 7px;border-radius:4px;cursor:pointer}
+  /* ---- 左端の縦型ツールドック ---- */
+  .dock{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:4px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);z-index:3}
+  .dock .tile{width:40px;height:40px;border:0;border-radius:8px;background:transparent;color:var(--text);display:grid;place-items:center;cursor:pointer;position:relative}
+  .dock .tile svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+  .dock .tile:hover{background:var(--panel2)}
+  .dock .tile[aria-expanded="true"]{background:var(--chip)}
+  .dock .tile[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+  .dock .tile .lbl{position:absolute;bottom:2px;right:4px;font-size:9px;line-height:1;color:var(--muted);font-family:"IBM Plex Mono",monospace}
+  .dock .tile[aria-pressed="true"] .lbl{color:var(--accent-ink)}
+  .dock .sep{height:1px;background:var(--line);margin:2px 6px}
+  .dock.collapsed .tile:not(.handle),.dock.collapsed .sep{display:none}
+  .dock .tile.handle svg{width:18px;height:18px}
+  /* ---- ポップオーバー ---- */
+  .pop{position:absolute;left:62px;top:10px;min-width:220px;max-width:min(420px,calc(100% - 80px));background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,.18);padding:10px 12px;display:flex;flex-direction:column;gap:8px;z-index:4;font-size:12.5px}
+  .pop[hidden]{display:none}
+  .pop h3{margin:0;font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:500;display:flex;justify-content:space-between;align-items:center}
+  .pop h3 .x{border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:14px;line-height:1;padding:2px 4px}
+  .pop .row{display:flex;gap:6px 8px;align-items:center;flex-wrap:wrap}
+  .pop label{display:flex;align-items:center;gap:6px;white-space:nowrap}
+  .pop input[type=range]{flex:1;min-width:120px;accent-color:var(--accent)}
+  .pop .desc{color:var(--muted);font-size:11px;margin:0}
+  .seg2{display:inline-flex;gap:2px;padding:2px;background:var(--panel2);border:1px solid var(--line);border-radius:6px;flex-wrap:wrap}
+  .seg2 button{border:0;background:transparent;color:var(--text);font:inherit;font-size:12px;min-width:30px;padding:4px 8px;border-radius:4px;cursor:pointer}
   .seg2 button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
   .hint{color:var(--muted);font-size:11px}
-  .tb{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:3px 9px;font:inherit;font-size:12px;color:var(--text);cursor:pointer}
+  .tb{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 10px;font:inherit;font-size:12px;color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+  .tb svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .tb[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
   canvas.picking{cursor:crosshair}
-  .status{position:absolute;right:12px;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted)}
+  .status{position:absolute;right:12px;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted);max-width:60%}
+  .pivotinfo{position:absolute;left:12px;bottom:10px;background:color-mix(in srgb,var(--panel) 80%,transparent);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted);pointer-events:none}
   aside{background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px;min-height:0}
   .lodhead{display:flex;align-items:baseline;gap:10px}
   .lodhead .n{font-size:30px;font-weight:700;line-height:1;color:var(--c)}
@@ -104,42 +118,93 @@
   <main>
     <div class="stage">
       <canvas id="c"></canvas>
-      <div class="tools">
+      <!-- 左端ドック: アイコンを押すと右にパネルが開く -->
+      <div class="dock" id="dock" role="toolbar" aria-label="操作">
+        <button type="button" class="tile handle" id="dockToggle" title="パネルを折りたたむ / 開く" aria-expanded="true">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+        <div class="sep"></div>
+        <button type="button" class="tile" data-pop="popView" title="視点 (全景 / 坑口 / 内部 / 断面)" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6H8l1.5-2h5L16 6h2.5A2.5 2.5 0 0 1 21 8.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+        </button>
+        <button type="button" class="tile" data-pop="popDisp" title="表示 (ワイヤーフレーム / 透過 / 目印 / 回転方向)" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+        <button type="button" class="tile" data-pop="popClip" title="断面カット" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M4 18V8l8-4 8 4v10l-8 4z"/><path d="M4 8l8 4 8-4M12 12v10" stroke-dasharray="2 2"/><path d="M14 3l7 7" /></svg>
+        </button>
+        <div class="sep"></div>
+        <button type="button" class="tile" data-pop="popSens" title="回転感度 (1〜6)" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16l4-6"/><circle cx="12" cy="16" r="1.4"/><path d="M4 16h2M18 16h2M7 9.5l1 1M17 9.5l-1 1M12 8v1.5"/></svg><span class="lbl" id="sensLbl">3</span>
+        </button>
+        <button type="button" class="tile" data-pop="popRad" title="ピボット (回転半径の決め方)" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.8" fill="currentColor"/><path d="M19.5 12a7.5 7.5 0 1 1-3-6"/><path d="M16.5 3.5v3h-3"/></svg><span class="lbl" id="radLbl">固</span>
+        </button>
+        <button type="button" class="tile" data-pop="popPivot" title="回転中心を置く" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>
+        </button>
+        <button type="button" class="tile" id="pickFly" aria-pressed="false" title="クリックした点へ寄る (次にクリックした点を回転中心にして視点を寄せる。押すたびに段階的に近づく / Shift+ダブルクリックでも可)">
+          <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L21 21"/><path d="M4 10h3M10 4v3"/><path d="M10 10l-3.5-3.5"/><path d="M6.5 9.5v-3h3"/></svg>
+        </button>
+      </div>
+
+      <!-- ポップオーバー群 -->
+      <div class="pop" id="popView" hidden>
+        <h3>視点<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
         <div class="row">
-          <button type="button" data-view="all">全景</button>
-          <button type="button" data-view="portal">坑口</button>
-          <button type="button" data-view="inside">内部</button>
-          <button type="button" data-view="section">断面</button>
-        </div>
-        <div class="row">
-          <button type="button" id="wire" aria-pressed="false">ワイヤーフレーム</button>
-          <button type="button" id="ghost" aria-pressed="false">覆工を透過</button>
-          <button type="button" id="orbitDir" aria-pressed="true" title="ON: AutoCAD と同じ向き (ドラッグした方向にモデルが回る) / OFF: 反転 (ドラッグした方向にカメラが動く)">回転: AutoCAD風</button>
+          <button type="button" class="tb" data-view="all">全景</button>
+          <button type="button" class="tb" data-view="portal">坑口</button>
+          <button type="button" class="tb" data-view="inside">内部</button>
+          <button type="button" class="tb" data-view="section">断面</button>
         </div>
       </div>
-      <div class="status" id="status">読み込み中…</div>
-      <div class="clip">
-        <div class="bar">
-          <label><input type="checkbox" id="clipOn"> 断面カット</label>
-          <label style="flex:1">位置 <input type="range" id="clipPos" min="0" max="240" step="1" value="120"> <span class="mono" id="clipLbl">No.120</span></label>
+      <div class="pop" id="popDisp" hidden>
+        <h3>表示<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row">
+          <button type="button" class="tb" id="wire" aria-pressed="false">ワイヤーフレーム</button>
+          <button type="button" class="tb" id="ghost" aria-pressed="false">覆工を透過</button>
+        </div>
+        <div class="row">
+          <label><input type="checkbox" id="showPivotCk" checked> 回転中心の目印を常に表示</label>
+        </div>
+        <div class="row">
+          <button type="button" class="tb" id="orbitDir" aria-pressed="true" title="ON: AutoCAD と同じ向き (ドラッグした方向にモデルが回る) / OFF: 反転 (ドラッグした方向にカメラが動く)">回転: AutoCAD風</button>
+        </div>
+      </div>
+      <div class="pop" id="popClip" hidden>
+        <h3>断面カット<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row">
+          <label><input type="checkbox" id="clipOn"> カットする</label>
           <label><input type="checkbox" id="clipDir"> 反転</label>
         </div>
-        <div class="bar">
-          <div class="opt" role="group" aria-label="回転感度"><span>回転感度</span><span class="seg2" id="sensSeg"></span></div>
-          <div class="opt" role="group" aria-label="ピボットの決め方"><span>ピボット</span><span class="seg2" id="radSeg"></span><span class="hint" id="radHint"></span></div>
-        </div>
-        <div class="bar">
-          <div class="opt" role="group" aria-label="回転中心の指定"><span>回転中心</span>
-            <button type="button" class="tb" id="pickPivot" aria-pressed="false" title="次にクリックした部材の点を回転中心にします (Esc で中止)">クリックで指定</button>
-            <button type="button" class="tb" id="pickFly" aria-pressed="false" title="次にクリックした点を回転中心にして、視点をその点へ寄せます (押すたびに段階的に近づく / Shift+ダブルクリックでも可)">クリックした点へ寄る</button>
-            <button type="button" class="tb" id="pivotAtSt" title="上のスライダーの測点のトンネル中心線上に回転中心を置きます">測点 No.120 に置く</button>
-            <button type="button" class="tb" id="pivotMid" title="トンネル中央 (No.120) に回転中心を置きます">トンネル中央</button>
-            <button type="button" class="tb" id="goPivot" title="回転中心から 30m の位置まで視点を寄せ、回転中心に向き直します">中心へ寄る</button>
-            <label><input type="checkbox" id="showPivotCk" checked> 目印を常に表示</label>
-          </div>
-          <span class="mono hint" id="pivotInfo"></span>
-        </div>
+        <label style="width:100%">測点 <input type="range" id="clipPos" min="0" max="240" step="1" value="120"> <span class="mono" id="clipLbl">No.120</span></label>
+        <p class="desc">「断面」視点を選ぶと No.120 でカットした状態になります。</p>
       </div>
+      <div class="pop" id="popSens" hidden>
+        <h3>回転感度<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row"><span class="seg2" id="sensSeg"></span></div>
+        <p class="desc">1 が最も穏やか、6 が最も速い。既定は 3。</p>
+      </div>
+      <div class="pop" id="popRad" hidden>
+        <h3>ピボット（回転半径の決め方）<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row"><span class="seg2" id="radSeg"></span></div>
+        <p class="desc" id="radHint"></p>
+        <p class="desc">固定: 置いた回転中心を動かさない。自動: ドラッグ開始位置の部材までの距離。数値: 視点からその距離の点を回転中心にする。</p>
+      </div>
+      <div class="pop" id="popPivot" hidden>
+        <h3>回転中心を置く<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row">
+          <button type="button" class="tb" id="pickPivot" aria-pressed="false" title="次にクリックした部材の点を回転中心にします (Esc で中止)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>クリックで指定</button>
+          <button type="button" class="tb" id="pivotMid" title="トンネル中央 (No.120) に回転中心を置きます">トンネル中央</button>
+        </div>
+        <div class="row">
+          <button type="button" class="tb" id="pivotAtSt" title="断面カットのスライダーで選んだ測点のトンネル中心線上に回転中心を置きます">測点 No.120 に置く</button>
+          <button type="button" class="tb" id="goPivot" title="回転中心から 30m の位置まで視点を寄せ、回転中心に向き直します"><svg viewBox="0 0 24 24"><path d="M4 12h12M12 7l5 5-5 5"/><circle cx="19.5" cy="12" r="1.5" fill="currentColor"/></svg>中心へ寄る</button>
+        </div>
+        <p class="desc">ダブルクリックでも回転中心を置けます。オレンジの玉と地面への垂線が現在の回転中心です。</p>
+      </div>
+      <div class="status" id="status">読み込み中…</div>
+      <div class="pivotinfo mono" id="pivotInfo"></div>
     </div>
     <aside>
       <div class="lodhead"><span class="n" id="lodN">300</span><span class="t" id="lodT"></span></div>
@@ -159,10 +224,9 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
-      <p class="note">操作: ドラッグで回転（AutoCAD と同じく、ドラッグした方向にモデルが回ります。「回転: AutoCAD風」OFF で逆向き）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。回転中はオレンジの玉が回転中心を示します。</p>
-      <p class="note"><b>指定した点へ寄る</b>: 「クリックした点へ寄る」を押してから部材をクリック（または Shift＋ダブルクリック）すると、その点を回転中心にして視点が寄ります。繰り返すと段階的に近づきます。</p>
-      <p class="note"><b>回転中心の置き方</b>: 「クリックで指定」を押してから部材をクリック、または「測点 No.○ に置く」「トンネル中央」ボタン、またはダブルクリック。オレンジの玉と地面への垂線が現在の回転中心です。ピボットを「固定」にしておくと、置いた回転中心はドラッグやホイールで動きません。</p>
-      <p class="note"><b>迷子になったら</b>: 「トンネル中央」→「中心へ寄る」で回転中心の 30 m 手前に戻れます。「全景」でも最初の視点に戻ります。回転感度は 6 段階、ピボットは固定 / 自動 / 1〜150 m の 6 段階です。</p>
+      <p class="note"><b>操作</b>: ドラッグで回転（AutoCAD と同じく、ドラッグした方向にモデルが回ります）、ホイールで拡大縮小、右ドラッグで移動。左端のアイコンから、視点・表示・断面カット・回転感度・ピボット・回転中心の設定を開けます。一番上の「≡」でアイコン列を折りたためます。</p>
+      <p class="note"><b>指定した点へ寄る</b>（虫めがねのアイコン）: 押してからモデル上の点をクリックすると、その点を回転中心にして視点が寄ります。繰り返すと段階的に近づきます。Shift＋ダブルクリックでも同じです。</p>
+      <p class="note"><b>回転中心</b>（十字のアイコン）: 「クリックで指定」「測点に置く」「トンネル中央」で回転中心を置き、「中心へ寄る」でその 30 m 手前に視点を戻せます。オレンジの玉と地面への垂線が現在の回転中心で、画面左下に位置を表示します。迷子になったら「トンネル中央」→「中心へ寄る」、または視点の「全景」。</p>
     </aside>
   </main>
 </div>
@@ -211,10 +275,12 @@ function applySens(){
   controls.rotateSpeed = (acad ? 1 : -1) * SENS[sensIdx];   // AutoCAD風 = モデルを掴んで回す向き (three.js 標準と同じ)。OFF で反転
   try{ localStorage.setItem('tunnel-orbit-acad', acad ? '1' : '0'); localStorage.setItem('tunnel-sens', String(sensIdx + 1)); }catch(e){}
   document.querySelectorAll('#sensSeg button').forEach((b,i)=>b.setAttribute('aria-pressed', String(i === sensIdx)));
+  if (typeof updateTileLabels === 'function') updateTileLabels();
 }
 function applyRad(retarget){
   try{ localStorage.setItem('tunnel-rad2', String(radIdx)); }catch(e){}
   document.querySelectorAll('#radSeg button').forEach((b,i)=>b.setAttribute('aria-pressed', String(i === radIdx)));
+  if (typeof updateTileLabels === 'function') updateTileLabels();
   const v = RAD[radIdx];
   controls.zoomToCursor = v !== 'fixed';   // 固定モードではホイールも回転中心に向かって寄る (回転中心が勝手に動かない)
   document.getElementById('radHint').textContent = v === 'fixed' ? '回転中心は手動で置いた位置のまま' : v === null ? 'ドラッグ開始位置の部材までの距離' : `視点の ${v} m 先`;
@@ -324,6 +390,30 @@ const VIEWS = {
 VIEWS.all();
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>VIEWS[b.dataset.view]()));
 
+// ---- 左端ドック: タイルを押すとポップオーバーを開閉。折りたたみ状態は記憶 ----
+const dock = document.getElementById('dock'); const dockToggle = document.getElementById('dockToggle');
+const pops = [...document.querySelectorAll('.pop')];
+function closePops(){ pops.forEach(p=>p.hidden = true); document.querySelectorAll('.dock .tile[data-pop]').forEach(t=>t.setAttribute('aria-expanded','false')); }
+document.querySelectorAll('.dock .tile[data-pop]').forEach(tile=>{
+  tile.addEventListener('click', ()=>{
+    const pop = document.getElementById(tile.dataset.pop); const open = pop.hidden;
+    closePops();
+    if (open){ pop.hidden = false; tile.setAttribute('aria-expanded','true'); pop.style.top = Math.min(tile.offsetTop + dock.offsetTop, Math.max(10, canvas.clientHeight - pop.offsetHeight - 10)) + 'px'; }
+  });
+});
+pops.forEach(p=>p.querySelector('[data-close]').addEventListener('click', closePops));
+window.addEventListener('keydown', ev=>{ if (ev.key === 'Escape') closePops(); });
+canvas.addEventListener('pointerdown', ()=>{ if (!pops.some(p=>!p.hidden)) return; closePops(); }, {capture:true});
+function setDock(collapsed){ dock.classList.toggle('collapsed', collapsed); dockToggle.setAttribute('aria-expanded', String(!collapsed)); if (collapsed) closePops(); try{ localStorage.setItem('tunnel-dock', collapsed ? '0' : '1'); }catch(e){} }
+dockToggle.addEventListener('click', ()=>setDock(!dock.classList.contains('collapsed')));
+try{ if (localStorage.getItem('tunnel-dock') === '0') setDock(true); }catch(e){}
+// タイル上の小さなラベル (現在の感度 / ピボット設定)
+function updateTileLabels(){
+  document.getElementById('sensLbl').textContent = String(sensIdx + 1);
+  document.getElementById('radLbl').textContent = ['固','自','1','3','8','20','50','150'][radIdx];
+}
+updateTileLabels();
+
 // --- 回転中心 (ピボット) の自動設定 ---
 const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); const viewDir = new THREE.Vector3();
 function pick(ev){
@@ -357,7 +447,7 @@ const pickBtn = document.getElementById('pickPivot'); const flyBtn = document.ge
 function setPicking(on, mode){
   picking = on; if (mode) pickMode = mode;
   pickBtn.setAttribute('aria-pressed', String(on && pickMode === 'pivot')); flyBtn.setAttribute('aria-pressed', String(on && pickMode === 'fly'));
-  canvas.classList.toggle('picking', on);
+  canvas.classList.toggle('picking', on); if (on) closePops();
   if (on) status.textContent = pickMode === 'fly' ? '寄りたい点をクリックしてください (Esc で中止)' : '回転中心にしたい部材をクリックしてください (Esc で中止)';
 }
 pickBtn.addEventListener('click', ()=>setPicking(!(picking && pickMode === 'pivot'), 'pivot'));
