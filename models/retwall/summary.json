@@ -1,0 +1,525 @@
+{
+ "lods": {
+  "100": [
+   {
+    "name": "前面地盤 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "参考表示",
+    "tris": 12
+   },
+   {
+    "name": "背面盛土 (参考)",
+    "category": "土工",
+    "first_lod": 100,
+    "note": "擁壁が支える背面の盛土 (参考表示)",
+    "tris": 206
+   },
+   {
+    "name": "擁壁法線 (前面線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "擁壁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "擁壁範囲ボックス",
+    "category": "概略形状",
+    "first_lod": 100,
+    "note": "位置・延長・高さが分かる直方体",
+    "tris": 12
+   }
+  ],
+  "200": [
+   {
+    "name": "前面地盤 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "参考表示",
+    "tris": 12
+   },
+   {
+    "name": "背面盛土 (参考)",
+    "category": "土工",
+    "first_lod": 100,
+    "note": "擁壁が支える背面の盛土 (参考表示)",
+    "tris": 206
+   },
+   {
+    "name": "擁壁法線 (前面線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "擁壁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "逆T式擁壁 (断面一体スイープ) L=30m",
+    "category": "本体",
+    "first_lod": 200,
+    "note": "一般図の標準断面をスイープした形状",
+    "tris": 252
+   },
+   {
+    "name": "重力式擁壁 (断面一体スイープ) L=10m",
+    "category": "本体",
+    "first_lod": 200,
+    "note": "",
+    "tris": 44
+   }
+  ],
+  "300": [
+   {
+    "name": "前面地盤 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "参考表示",
+    "tris": 12
+   },
+   {
+    "name": "背面盛土 (参考)",
+    "category": "土工",
+    "first_lod": 100,
+    "note": "擁壁が支える背面の盛土 (参考表示)",
+    "tris": 206
+   },
+   {
+    "name": "擁壁法線 (前面線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "擁壁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "重力式擁壁 (H=2.0m, 天端0.4m, 背面1:0.6) L=10m",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "重力式擁壁の外形",
+    "tris": 12
+   },
+   {
+    "name": "均しコンクリート t=10cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "均しコンクリート",
+    "tris": 12
+   },
+   {
+    "name": "基礎砕石 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎砕石",
+    "tris": 12
+   },
+   {
+    "name": "重力式 基礎材 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎材 (RC-40)",
+    "tris": 12
+   },
+   {
+    "name": "目地位置記号 (No.10)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "目地の位置 (記号)。詳細度400で目地材・止水板",
+    "tris": 12
+   },
+   {
+    "name": "目地位置記号 (No.20)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "目地の位置 (記号)。詳細度400で目地材・止水板",
+    "tris": 12
+   },
+   {
+    "name": "目地位置記号 (No.30 逆T式/重力式 境界)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "",
+    "tris": 12
+   },
+   {
+    "name": "水抜き孔 位置記号 (φ75 @2m 千鳥)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "水抜き孔の配置をパターン化した記号",
+    "tris": 360
+   },
+   {
+    "name": "裏込め材 範囲記号",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "裏込め砕石の範囲 (記号)。詳細度400で実体",
+    "tris": 124
+   }
+  ],
+  "400": [
+   {
+    "name": "前面地盤 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "参考表示",
+    "tris": 12
+   },
+   {
+    "name": "背面盛土 (参考)",
+    "category": "土工",
+    "first_lod": 100,
+    "note": "擁壁が支える背面の盛土 (参考表示)",
+    "tris": 206
+   },
+   {
+    "name": "擁壁法線 (前面線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "擁壁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "重力式擁壁 (H=2.0m, 天端0.4m, 背面1:0.6) L=10m",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "重力式擁壁の外形",
+    "tris": 12
+   },
+   {
+    "name": "均しコンクリート t=10cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "均しコンクリート",
+    "tris": 12
+   },
+   {
+    "name": "基礎砕石 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎砕石",
+    "tris": 12
+   },
+   {
+    "name": "重力式 基礎材 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎材 (RC-40)",
+    "tris": 12
+   },
+   {
+    "name": "配筋 (たて壁 D19@250 / 底版 D19@250 / 配力 D13@300, 654本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "逆T式擁壁の配筋",
+    "tris": 7848
+   },
+   {
+    "name": "水抜き孔 φ75 (30箇所, 千鳥 @2m)",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "水抜き孔の実形状",
+    "tris": 960
+   },
+   {
+    "name": "裏込め砕石 (幅0.6m)",
+    "category": "裏込め",
+    "first_lod": 400,
+    "note": "裏込め材の実体",
+    "tris": 124
+   },
+   {
+    "name": "透水マット (背面)",
+    "category": "裏込め",
+    "first_lod": 400,
+    "note": "壁背面の透水マット",
+    "tris": 124
+   },
+   {
+    "name": "裏込め排水管 φ100 (底版上 背面)",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "裏面排水管",
+    "tris": 28
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.10)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.20)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.30)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "天端 防護柵 (支柱15本)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "天端の転落防止柵",
+    "tris": 400
+   }
+  ],
+  "500": [
+   {
+    "name": "前面地盤 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "参考表示",
+    "tris": 12
+   },
+   {
+    "name": "背面盛土 (参考)",
+    "category": "土工",
+    "first_lod": 100,
+    "note": "擁壁が支える背面の盛土 (参考表示)",
+    "tris": 206
+   },
+   {
+    "name": "擁壁法線 (前面線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "擁壁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック1)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック2)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 たて壁 (H=5.0m, t=0.4〜0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "たて壁 (前面鉛直・背面勾配)",
+    "tris": 12
+   },
+   {
+    "name": "逆T式 底版 (B=3.9m, t=0.5m, ブロック3)",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "底版 (つま先 0.8m / かかと 2.6m)",
+    "tris": 12
+   },
+   {
+    "name": "重力式擁壁 (H=2.0m, 天端0.4m, 背面1:0.6) L=10m",
+    "category": "本体",
+    "first_lod": 300,
+    "note": "重力式擁壁の外形",
+    "tris": 12
+   },
+   {
+    "name": "均しコンクリート t=10cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "均しコンクリート",
+    "tris": 12
+   },
+   {
+    "name": "基礎砕石 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎砕石",
+    "tris": 12
+   },
+   {
+    "name": "重力式 基礎材 t=20cm",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "基礎材 (RC-40)",
+    "tris": 12
+   },
+   {
+    "name": "配筋 (たて壁 D19@250 / 底版 D19@250 / 配力 D13@300, 654本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "逆T式擁壁の配筋",
+    "tris": 7848
+   },
+   {
+    "name": "水抜き孔 φ75 (30箇所, 千鳥 @2m)",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "水抜き孔の実形状",
+    "tris": 960
+   },
+   {
+    "name": "裏込め砕石 (幅0.6m)",
+    "category": "裏込め",
+    "first_lod": 400,
+    "note": "裏込め材の実体",
+    "tris": 124
+   },
+   {
+    "name": "透水マット (背面)",
+    "category": "裏込め",
+    "first_lod": 400,
+    "note": "壁背面の透水マット",
+    "tris": 124
+   },
+   {
+    "name": "裏込め排水管 φ100 (底版上 背面)",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "裏面排水管",
+    "tris": 28
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.10)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.20)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "目地材 t=20mm・止水板 (No.30)",
+    "category": "目地",
+    "first_lod": 400,
+    "note": "目地材と止水板",
+    "tris": 24
+   },
+   {
+    "name": "天端 防護柵 (支柱15本)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "天端の転落防止柵",
+    "tris": 400
+   },
+   {
+    "name": "壁面 出来形 (実測: 天端の通り・倒れ, 記号)",
+    "category": "出来形",
+    "first_lod": 500,
+    "note": "出来形計測結果の反映 (サンプルでは記号)",
+    "tris": 124
+   },
+   {
+    "name": "天端コンクリート仕上げ・境界標 (完成)",
+    "category": "完成設備",
+    "first_lod": 500,
+    "note": "完成時の境界標",
+    "tris": 60
+   }
+  ]
+ }
+}

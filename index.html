@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)} [hidden]{display:none!important}</style>
-<title>山岳トンネル詳細度ビューア</title>
+<title>BIM/CIM 詳細度サンプルビューア</title>
 <meta name="description" content="国交省BIM/CIM活用ガイドラインの詳細度100〜500を、汎用トンネルの3Dモデルで切り替えて確認できるビューア">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -27,7 +27,8 @@
   html,body{height:100%}
   body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans JP",system-ui,-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;font-size:14px;line-height:1.55}
   .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
-  .app{display:grid;grid-template-rows:auto 1fr;height:100%;min-height:0}
+  .app{display:grid;grid-template-rows:auto 1fr;height:100%;min-height:0;position:relative}
+  .entrance{top:var(--hdr,58px)}
   header{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
   header h1{font-size:16px;font-weight:700;margin:0;letter-spacing:.01em;text-wrap:balance}
   header h1 small{display:block;font-size:11px;font-weight:400;color:var(--muted);letter-spacing:.06em}
@@ -102,6 +103,24 @@
   .note{font-size:11.5px;color:var(--muted)}
   .legend{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:11.5px;color:var(--muted)}
   .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+  header #pickModel{margin-left:auto}
+  .entrance{position:absolute;inset:0;top:auto;z-index:20;background:var(--bg);overflow:auto;padding:24px 16px 40px}
+  .entrance[hidden]{display:none}
+  .ent-inner{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+  .ent-lead{margin:0;color:var(--muted);max-width:70ch}
+  .ent-foot{margin:0;color:var(--muted);font-size:11.5px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+  .card{display:flex;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;color:var(--text);font:inherit}
+  .card:hover{border-color:var(--accent);box-shadow:0 4px 14px rgba(0,0,0,.12)}
+  .card:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+  .card img{width:100%;aspect-ratio:8/5;object-fit:cover;background:var(--panel2);display:block}
+  .card .cb{padding:10px 12px 12px;display:flex;flex-direction:column;gap:4px}
+  .card .cat{font-size:11px;letter-spacing:.06em;color:var(--muted)}
+  .card .nm{font-weight:700;font-size:14px}
+  .card .ds{font-size:12px;color:var(--muted);line-height:1.5}
+  .minfo{display:flex;flex-direction:column;gap:6px;font-size:12px}
+  .minfo .ref{color:var(--muted);font-size:11.5px}
+  .minfo ul{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px}
   @media (max-width:900px){
     main{grid-template-columns:1fr;grid-template-rows:minmax(360px,55vh) auto}
     aside{border-left:0;border-top:1px solid var(--line)}
@@ -113,7 +132,8 @@
 
 <div class="app">
   <header>
-    <h1>山岳トンネル 詳細度ビューア<small>BIM/CIM活用ガイドライン(案) 表1-2「山岳トンネルの例」に対応した汎用サンプル</small></h1>
+    <h1><span id="modelTitle">BIM/CIM 詳細度サンプルビューア</span><small id="modelSub">国交省 BIM/CIM活用ガイドライン(案) の詳細度100〜500を、工種別の汎用モデルで比較</small></h1>
+    <button type="button" class="tb" id="pickModel" title="別の工種のモデルを選ぶ"><svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8"><path d="M4 5h16M4 12h16M4 19h16"/></svg>工種を選ぶ</button>
     <div class="seg" role="group" aria-label="詳細度">
       <button type="button" data-lod="100" style="--c:var(--lod100)"><span class="dot"></span>詳細度100</button>
       <button type="button" data-lod="200" style="--c:var(--lod200)"><span class="dot"></span>200</button>
@@ -122,6 +142,13 @@
       <button type="button" data-lod="500" style="--c:var(--lod500)"><span class="dot"></span>500</button>
     </div>
   </header>
+  <div class="entrance" id="entrance">
+    <div class="ent-inner">
+      <p class="ent-lead">工種を選ぶと、その汎用サンプルモデルを詳細度100〜500で切り替えて確認できます。すべて架空の寸法・線形で作成しており、実案件のデータは含みません。</p>
+      <div class="cards" id="cards"></div>
+      <p class="ent-foot">出典: 国土交通省「BIM/CIM活用ガイドライン(案) 第1編 共通編」表1-2 (令和4年3月)。山岳トンネル以外の工種別定義文は共通定義に基づく本サンプルでの適用例です。</p>
+    </div>
+  </div>
   <main>
     <div class="stage">
       <canvas id="c"></canvas>
@@ -158,12 +185,7 @@
       <!-- ポップオーバー群 -->
       <div class="pop" id="popView" hidden>
         <h3>視点<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
-        <div class="row">
-          <button type="button" class="tb" data-view="all">全景</button>
-          <button type="button" class="tb" data-view="portal">坑口</button>
-          <button type="button" class="tb" data-view="inside">内部</button>
-          <button type="button" class="tb" data-view="section">断面</button>
-        </div>
+        <div class="row" id="viewBtns"></div>
       </div>
       <div class="pop" id="popDisp" hidden>
         <h3>表示<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
@@ -202,7 +224,7 @@
         <h3>回転中心を置く<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
         <div class="row">
           <button type="button" class="tb" id="pickPivot" aria-pressed="false" title="次にクリックした部材の点を回転中心にします (Esc で中止)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6.5"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg>クリックで指定</button>
-          <button type="button" class="tb" id="pivotMid" title="トンネル中央 (No.120) に回転中心を置きます">トンネル中央</button>
+          <button type="button" class="tb" id="pivotMid" title="モデルの中央に回転中心を置きます">モデル中央</button>
         </div>
         <div class="row">
           <button type="button" class="tb" id="pivotAtSt" title="断面カットのスライダーで選んだ測点のトンネル中心線上に回転中心を置きます">測点 No.120 に置く</button>
@@ -213,7 +235,7 @@
       <div class="status" id="status">読み込み中…</div>
       <div class="cubewrap">
         <canvas id="cube" width="248" height="248" title="ドラッグで視点を回転 / 面・辺・角をクリックでその方向から見る"></canvas>
-        <button type="button" class="home" id="homeBtn" title="ホーム視点に戻る (全景 + 回転中心をトンネル中央へ)"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></button>
+        <button type="button" class="home" id="homeBtn" title="ホーム視点に戻る (全景 + 回転中心をモデル中央へ)"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></button>
       </div>
       <div class="pivotinfo mono" id="pivotInfo"></div>
     </div>
@@ -221,7 +243,7 @@
       <div class="lodhead"><span class="n" id="lodN">300</span><span class="t" id="lodT"></span></div>
       <div class="def">
         <b>共通定義</b><p id="defCommon"></p>
-        <b>山岳トンネルのモデル化</b><p id="defTunnel"></p>
+        <b>この工種でのモデル化</b><p id="defTunnel"></p>
       </div>
       <div class="stats">
         <div class="stat"><b>部材数</b><span class="mono" id="stParts">-</span></div>
@@ -230,15 +252,11 @@
       </div>
       <h2>モデルに含まれる要素（クリックで表示/非表示）</h2>
       <div id="list"></div>
-      <div class="legend">
-        <span><i style="background:#8CCB8C"></i>DⅠ区間</span><span><i style="background:#F2D973"></i>DⅡ区間</span><span><i style="background:#F28C73"></i>DⅢa区間</span>
-        <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
-      </div>
-      <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
+      <div id="modelInfo" class="minfo"></div>
       <p class="note"><b>ViewCube（右上）</b>: キューブをドラッグすると視点が回ります。面（上・下・前・後・左・右）や辺・角をクリックすると、その方向から見た視点にスナップします。「上」を押すと平面図のように真上から（北が画面上）。下のホームボタンで全景に戻ります。</p>
       <p class="note"><b>操作</b>: ドラッグで回転（AutoCAD と同じく、ドラッグした方向にモデルが回ります）、ホイールで拡大縮小、右ドラッグで移動。左端のアイコンから、視点・表示・断面カット・回転感度・ピボット・回転中心の設定を開けます。一番上の「≡」でアイコン列を折りたためます。</p>
       <p class="note"><b>指定した点へ寄る</b>（虫めがねのアイコン）: 押してからモデル上の点をクリックすると、その点を回転中心にして視点が寄ります。繰り返すと段階的に近づきます。Shift＋ダブルクリックでも同じです。</p>
-      <p class="note"><b>回転中心</b>（十字のアイコン）: 「クリックで指定」「測点に置く」「トンネル中央」で回転中心を置き、「中心へ寄る」でその 30 m 手前に視点を戻せます。オレンジの玉と地面への垂線が現在の回転中心で、画面左下に位置を表示します。迷子になったら「トンネル中央」→「中心へ寄る」、または視点の「全景」。</p>
+      <p class="note"><b>回転中心</b>（十字のアイコン）: 「クリックで指定」「測点に置く」「モデル中央」で回転中心を置き、「中心へ寄る」でその 30 m 手前に視点を戻せます。オレンジの玉と地面への垂線が現在の回転中心で、画面左下に位置を表示します。迷子になったら「モデル中央」→「中心へ寄る」、またはホームボタン。</p>
     </aside>
   </main>
 </div>
@@ -254,14 +272,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const DEF = {
-  100:["対象を記号や線、単純な形状でその位置を示したモデル。","対象構造物の位置を示すモデル。トンネルの配置が分かる程度の矩形形状若しくは線状のモデル。","位置"],
-  200:["対象の構造形式が分かる程度のモデル。標準横断で切土・盛土を表現、又は各構造物一般図に示される標準横断面を対象範囲でスイープさせて作成する程度の表現。","構造形式が確認できる程度の形状。計画道路の中心線形とトンネル標準横断面でモデル化。坑口部はモデル化せず位置を示す。","構造形式"],
-  300:["附帯工等の細部構造、接続部構造を除き、対象の外形形状を正確に表現したモデル。","主構造の形状が正確なモデル。避難通路などの拡幅部の形状をモデル化。適用支保パターンの範囲を記号等で、補助工法は対象工法をパターン化し記号等で必要範囲をモデル化。坑口部は外形寸法を正確にモデル化。舗装構成や排水工等の内空設備をモデル化。箱抜き位置は形状をパターン化し、記号等で設置範囲を示す。","外形形状"],
-  400:["詳細度300に加えて、附帯工、接続構造などの細部構造及び配筋も含めて、正確にモデル化する。","詳細度300に加えてロックボルトや配筋を含む全てをモデル化。トンネル本体や坑口部、箱抜き部の配筋、内装板、支保パターン、補助工法の形状の正確なモデル。","細部・配筋"],
-  500:["対象の現実の形状を表現したモデル。","設計・施工段階で活用したモデルに完成形状を反映したモデル。","完成形状"],
-};
-const ORDER = ["線形","概略形状","坑口位置","本体","覆工","吹付け","インバート","記号","坑門工","舗装","内空設備","排水工","箱抜き","鋼製支保工","ロックボルト","防水工","内装工","配筋","補助工法","出来形","完成設備"];
+let MODEL = null, AL = null;   // 選択中モデルの model.json と線形
+const ORDER = ["地形","道路","土工","線形","概略形状","坑口位置","本体","上部工","下部工","基礎","覆工","吹付け","インバート","法面","本体","記号","坑門工","舗装","内空設備","排水工","箱抜き","管路部","特殊部","地上機器","ウイング","取付水路","かご工","鋼製支保工","ロックボルト","防水工","内装工","配筋","PC鋼材","支承","附属物","法枠工","鉄筋挿入工","法面工","防護柵","引込管","管路 (条別)","附属","目地","裏込め","防水","補助工法","出来形","完成設備"];
 
 // ---------- three.js ----------
 const canvas = document.getElementById('c');
@@ -329,7 +341,7 @@ function updatePivotMark(){
   const pos = pivotLineGeo.attributes.position; pos.setXYZ(0, t.x, t.y, t.z); pos.setXYZ(1, t.x, t.y, GROUND_Z); pos.needsUpdate = true;
   if ((infoFrame++ % 10) === 0){
     const st = nearestStation(t); const rel = t.z - frame(st).p.z; const d = camera.position.distanceTo(t);
-    pivotInfo.textContent = `回転中心: No.${st} 付近 / 路面から ${rel >= 0 ? '+' : ''}${rel.toFixed(1)} m / 視点まで ${d.toFixed(0)} m`;
+    pivotInfo.textContent = `回転中心: ${MODEL?.station_label || 'No.'}${st} 付近 / 基準高から ${rel >= 0 ? '+' : ''}${rel.toFixed(1)} m / 視点まで ${d.toFixed(0)} m`;
   }
 }
 // ---- 回転中心・視点の移動 (短いアニメーションで跳ばないようにする) ----
@@ -360,7 +372,7 @@ function goToPivot(){
 }
 controls.maxPolarAngle = Math.PI * 0.995;  // 上下角は制限しない (地面の下へは tick() で高さを直接クランプ)
 controls.minDistance = 0.3; controls.maxDistance = 1500;
-const GROUND_Z = -2.3, MIN_CAM_Z = GROUND_Z + 0.4;
+let GROUND_Z = -2.3, MIN_CAM_Z = GROUND_Z + 0.4;
 controls.screenSpacePanning = true;
 scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a80, 1.2));
 const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(-80, -120, 160); scene.add(sun);
@@ -383,24 +395,32 @@ function tick(){
   requestAnimationFrame(tick);
 }
 
-// alignment (same as generator): straight 60 / R=500 curve 120 / straight 60, grade 1%
+// 線形: model.json の 2m ピッチ点列 (x,y,z,tx,ty,tz) を補間
 function frame(s){
-  const s1=60, lc=120, R=500; let x,y,phi;
-  if (s<=s1){x=s;y=0;phi=0;}
-  else if (s<=s1+lc){const d=s-s1; phi=d/R; x=s1+R*Math.sin(phi); y=R*(1-Math.cos(phi));}
-  else {phi=lc/R; const d=s-s1-lc; x=s1+R*Math.sin(phi)+d*Math.cos(phi); y=R*(1-Math.cos(phi))+d*Math.sin(phi);}
-  return {p:new THREE.Vector3(x,y,0.01*s), t:new THREE.Vector3(Math.cos(phi),Math.sin(phi),0), r:new THREE.Vector3(Math.sin(phi),-Math.cos(phi),0)};
+  if (!AL) return {p:new THREE.Vector3(), t:new THREE.Vector3(1,0,0), r:new THREE.Vector3(0,-1,0)};
+  const pts = AL.points, step = AL.step; const f = Math.max(0, Math.min(s, AL.length)) / step;
+  const i = Math.max(0, Math.min(pts.length - 2, Math.floor(f))); const t = pts.length > 1 ? f - i : 0;
+  const a = pts[i], b = pts[Math.min(pts.length - 1, i + 1)];
+  const p = new THREE.Vector3(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t);
+  const tv = new THREE.Vector3(a[3] + (b[3] - a[3]) * t, a[4] + (b[4] - a[4]) * t, 0).normalize();
+  return {p, t: tv, r: new THREE.Vector3(tv.y, -tv.x, 0)};
 }
 function lookAt(pos, tgt){ camera.position.copy(pos); controls.target.copy(tgt); controls.update(); }
-const VIEWS = {
-  all:   ()=>lookAt(new THREE.Vector3(-70,-120,80), new THREE.Vector3(110,15,0)),
-  portal:()=>lookAt(new THREE.Vector3(-30,-16,10), new THREE.Vector3(10,1,3)),
-  inside:()=>lookAt(new THREE.Vector3(62,0.5,2), new THREE.Vector3(67,0.8,2.2)),   // 回転中心は 5m 先 (見回し操作向け)
-  section:()=>{ const f=frame(120); clipOn.checked=true; clipPos.value=120; applyClip();
-    lookAt(f.p.clone().add(f.t.clone().multiplyScalar(26)).add(f.r.clone().multiplyScalar(-14)).add(new THREE.Vector3(0,0,10)), f.p.clone().add(new THREE.Vector3(0,0,2.5))); },
-};
-VIEWS.all();
-document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>VIEWS[b.dataset.view]()));
+const VIEWS = { all: ()=>{} };
+function buildViews(){
+  const box = document.getElementById('viewBtns'); box.innerHTML = '';
+  (MODEL.views || []).forEach((v, k)=>{
+    const fn = ()=>{
+      anim = null;
+      if (v.clip !== undefined && v.clip !== null){
+        const f = frame(v.clip); clipOn.checked = true; clipPos.value = v.clip; applyClip();
+        lookAt(f.p.clone().add(f.t.clone().multiplyScalar(26)).add(f.r.clone().multiplyScalar(-14)).add(new THREE.Vector3(0, 0, 10)), f.p.clone().add(new THREE.Vector3(0, 0, 2.5)));
+      } else { lookAt(new THREE.Vector3(...v.pos), new THREE.Vector3(...v.target)); }
+    };
+    if (k === 0) VIEWS.all = fn;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tb'; b.textContent = v.name; b.addEventListener('click', fn); box.appendChild(b);
+  });
+}
 
 // ---- 左端ドック: タイルを押すとポップオーバーを開閉。折りたたみ状態は記憶 ----
 const dock = document.getElementById('dock'); const dockToggle = document.getElementById('dockToggle');
@@ -485,19 +505,19 @@ canvas.addEventListener('click', ev=>{
 canvas.addEventListener('dblclick', ev=>{ const hit = pick(ev); if (!hit) return; if (ev.shiftKey) flyTo(hit.point); else setPivotAt(hit.point, '設定'); });
 // 測点・トンネル中央・中心へ寄る
 const pivotAtStBtn = document.getElementById('pivotAtSt');
-function pivotAtStation(s){ const f = frame(s); setPivotAt(f.p.clone().add(new THREE.Vector3(0, 0, 2.5)), `測点 No.${s} に設定`); }
+function pivotAtStation(s){ const f = frame(s); setPivotAt(f.p.clone().add(new THREE.Vector3(0, 0, 2.5)), `測点 ${MODEL?.station_label || 'No.'}${s} に設定`); }
 const clipPosEl = document.getElementById('clipPos');   // (clipPos の宣言より前に実行されるため id で取得)
 pivotAtStBtn.addEventListener('click', ()=>pivotAtStation(+clipPosEl.value));
-clipPosEl.addEventListener('input', ()=>{ pivotAtStBtn.textContent = `測点 No.${clipPosEl.value} に置く`; });
-document.getElementById('pivotMid').addEventListener('click', ()=>pivotAtStation(120));
+clipPosEl.addEventListener('input', ()=>{ pivotAtStBtn.textContent = `測点 ${MODEL?.station_label || 'No.'}${clipPosEl.value} に置く`; });
+document.getElementById('pivotMid').addEventListener('click', ()=>{ if (MODEL) setPivotAt(new THREE.Vector3(...MODEL.center), 'モデル中央に設定'); });
 document.getElementById('goPivot').addEventListener('click', goToPivot);
-function nearestStation(p){ let best=0, bd=1e9; for (let s=0; s<=240; s+=2){ const d=frame(s).p.distanceTo(p); if(d<bd){bd=d;best=s;} } return best; }
+function nearestStation(p){ let best=0, bd=1e9; const Lm = AL ? AL.length : 0; for (let s=0; s<=Lm; s+=2){ const d=frame(s).p.distanceTo(p); if(d<bd){bd=d;best=s;} } return best; }
 
 // clipping
 const clipOn=document.getElementById('clipOn'), clipPos=document.getElementById('clipPos'), clipDir=document.getElementById('clipDir'), clipLbl=document.getElementById('clipLbl');
 const plane = new THREE.Plane(new THREE.Vector3(-1,0,0), 0);
 function applyClip(){
-  clipLbl.textContent = 'No.'+clipPos.value;
+  clipLbl.textContent = (MODEL?.station_label || 'No.') + clipPos.value;
   if (!clipOn.checked){ renderer.clippingPlanes = []; return; }
   const f = frame(+clipPos.value); const n = f.t.clone().multiplyScalar(clipDir.checked?1:-1);
   plane.setFromNormalAndCoplanarPoint(n, f.p); renderer.clippingPlanes = [plane];
@@ -508,7 +528,7 @@ function applyClip(){
 const loader = new GLTFLoader();
 let current = null, currentLOD = null; const cache = {}; const sizes = {};
 let summary = null;
-fetch('model_summary.json').then(r=>r.json()).then(j=>{summary=j;}).catch(()=>{});
+
 const status = document.getElementById('status');
 const wireBtn=document.getElementById('wire'), ghostBtn=document.getElementById('ghost');
 wireBtn.addEventListener('click',()=>{wireBtn.setAttribute('aria-pressed', wireBtn.getAttribute('aria-pressed')!=='true'); applyStyle();});
@@ -525,25 +545,27 @@ function applyStyle(){
 async function showLOD(lod){
   currentLOD = lod;
   document.querySelectorAll('.seg button').forEach(b=>b.setAttribute('aria-pressed', String(+b.dataset.lod===lod)));
-  const d = DEF[lod]; document.getElementById('lodN').textContent=lod; document.getElementById('lodN').style.setProperty('--c',`var(--lod${lod})`);
+  if (!MODEL) return;
+  const d = MODEL.lod_def[String(lod)]; document.getElementById('lodN').textContent=lod; document.getElementById('lodN').style.setProperty('--c',`var(--lod${lod})`);
   document.getElementById('lodT').textContent = d[2]; document.getElementById('defCommon').textContent=d[0]; document.getElementById('defTunnel').textContent=d[1];
   try{ localStorage.setItem('tunnel-lod', String(lod)); }catch(e){}
   status.textContent = `詳細度${lod} を読み込み中…`;
   if (current){ scene.remove(current); current=null; }
-  if (!cache[lod]){
+  const key = MODEL.id + ':' + lod;
+  if (!cache[key]){
     // 公開版では GLB を .wasm 拡張子で同梱している (バイナリのまま配信できる拡張子のため)。ローカルでは .glb を試す。
-    cache[lod] = (async ()=>{
+    cache[key] = (async ()=>{
       let buf = null;
-      for (const url of [`LOD${lod}/tunnel_LOD${lod}.glb`, `LOD${lod}/tunnel_LOD${lod}.wasm`]){
-        try { const r = await fetch(url); if (r.ok){ buf = await r.arrayBuffer(); sizes[lod] = buf.byteLength; break; } } catch(e){}
+      for (const url of [`models/${MODEL.id}/LOD${lod}.glb`, `models/${MODEL.id}/LOD${lod}.wasm`]){
+        try { const r = await fetch(url); if (r.ok){ buf = await r.arrayBuffer(); sizes[key] = buf.byteLength; break; } } catch(e){}
       }
       if (!buf) throw new Error('not found');
       return new Promise((res,rej)=>loader.parse(buf, '', g=>res(g.scene), rej));
     })();
   }
   let root;
-  try { root = await cache[lod]; } catch(e){ status.textContent = `詳細度${lod} のモデルを読み込めませんでした`; return; }
-  if (currentLOD !== lod) return;
+  try { root = await cache[key]; } catch(e){ status.textContent = `詳細度${lod} のモデルを読み込めませんでした`; return; }
+  if (currentLOD !== lod || key !== MODEL.id + ':' + lod) return;
   root.traverse(o=>{ if(o.isMesh){ const nm = (o.name || o.parent?.name || ''); const [cat, name] = nm.includes('|') ? nm.split('|') : ['その他', nm];
       o.userData.cat=cat; o.userData.name=name; o.material = o.material.clone(); o.material.side = THREE.DoubleSide;
       o.userData.baseAlpha = o.material.opacity ?? 1; } });
@@ -554,7 +576,7 @@ async function showLOD(lod){
   const sumTris = parts ? parts.reduce((a,p)=>a+(p.tris||0),0) : 0;
   document.getElementById('stTris').textContent = (sumTris || tris).toLocaleString('ja-JP');
   status.textContent = `詳細度${lod} を表示中`;
-  document.getElementById('stSize').textContent = sizes[lod] ? (sizes[lod]/1048576).toFixed(1)+' MB' : '-';
+  document.getElementById('stSize').textContent = sizes[key] ? (sizes[key]/1048576).toFixed(1)+' MB' : '-';
 }
 
 function buildList(root, lod){
@@ -669,11 +691,50 @@ cubeCanvas.addEventListener('pointerup', ev=>{
 cubeCanvas.addEventListener('pointerleave', ()=>{ if (!cubeDown) setHover(-1); });
 cubeCanvas.addEventListener('dblclick', ev=>ev.preventDefault());
 // ホーム: 全景 + 回転中心をトンネル中央へ
-document.getElementById('homeBtn').addEventListener('click', ()=>{ anim = null; VIEWS.all(); controls.target.set(110, 15, 0); controls.update(); showPivot(1500); status.textContent = 'ホーム視点'; });
+document.getElementById('homeBtn').addEventListener('click', ()=>{ if (!MODEL) return; anim = null; VIEWS.all(); controls.target.set(...MODEL.center); controls.update(); showPivot(1500); status.textContent = 'ホーム視点'; });
 
 let start = 300; try{ const v = +localStorage.getItem('tunnel-lod'); if ([100,200,300,400,500].includes(v)) start = v; }catch(e){}
 tick();   // 描画ループ開始 (ViewCube など全ての定義が済んでから)
-showLOD(start);
+
+// ================= 工種の選択 / モデル読込 =================
+const entrance = document.getElementById('entrance'); const cards = document.getElementById('cards');
+let INDEX = [];
+function showEntrance(on){ entrance.hidden = !on; }
+document.getElementById('pickModel').addEventListener('click', ()=>{ showEntrance(true); });
+async function loadIndex(){
+  try{ INDEX = await (await fetch('models/index.json')).json(); }catch(e){ INDEX = []; }
+  cards.innerHTML = '';
+  INDEX.forEach(m=>{
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'card';
+    b.innerHTML = `<img alt="" src="models/${m.id}/thumb.jpg" loading="lazy"><div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
+    b.addEventListener('click', ()=>{ location.hash = m.id; });
+    cards.appendChild(b);
+  });
+}
+async function loadModel(id){
+  let mj, sj;
+  try{ mj = await (await fetch(`models/${id}/model.json`)).json(); }catch(e){ status.textContent = `モデル ${id} を読み込めませんでした`; return; }
+  try{ sj = await (await fetch(`models/${id}/summary.json`)).json(); }catch(e){ sj = null; }
+  MODEL = mj; AL = mj.alignment; summary = sj;
+  document.getElementById('modelTitle').textContent = mj.name; document.getElementById('modelSub').textContent = `${mj.category} / 詳細度別サンプル — ` + (mj.description || '');
+  document.getElementById('modelInfo').innerHTML = `<div class="ref">${mj.ref || ''}</div>` + (mj.notes && mj.notes.length ? '<ul>' + mj.notes.map(n=>`<li>${n}</li>`).join('') + '</ul>' : '');
+  GROUND_Z = mj.ground.z; MIN_CAM_Z = GROUND_Z + 0.4;
+  ground.position.set(mj.ground.cx, mj.ground.cy, mj.ground.z); ground.scale.setScalar(mj.ground.size / 900);
+  grid.position.set(mj.ground.cx, mj.ground.cy, mj.ground.z + 0.05); grid.scale.setScalar(mj.ground.size / 600);
+  clipPos.max = Math.round(AL.length); const sec = (mj.views || []).find(v=>v.clip !== undefined && v.clip !== null); clipPos.value = sec ? sec.clip : Math.round(AL.length / 2);
+  clipOn.checked = false; applyClip(); pivotAtStBtn.textContent = `測点 ${mj.station_label || 'No.'}${clipPos.value} に置く`;
+  buildViews(); anim = null; VIEWS.all(); controls.target.set(...mj.center); controls.update();
+  if (current){ scene.remove(current); current = null; }
+  showEntrance(false); document.title = `${mj.name} — 詳細度ビューア`;
+  showLOD(start);
+}
+function route(){
+  const id = (location.hash || '').replace(/^#/, '').replace(/[^A-Za-z0-9_-]/g, '');
+  if (id && (INDEX.length === 0 || INDEX.some(m=>m.id === id))){ if (!MODEL || MODEL.id !== id) loadModel(id); else showEntrance(false); }
+  else showEntrance(true);
+}
+window.addEventListener('hashchange', route);
+loadIndex().then(route);
 </script>
 
 </body>

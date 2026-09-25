@@ -1,0 +1,1309 @@
+{
+ "lods": {
+  "100": [
+   {
+    "name": "現況地形 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "地形は詳細度の対象外",
+    "tris": 9322
+   },
+   {
+    "name": "水面 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "河川の水面 (参考)",
+    "tris": 12
+   },
+   {
+    "name": "橋梁位置 (中心線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "橋梁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "橋梁範囲ボックス",
+    "category": "概略形状",
+    "first_lod": 100,
+    "note": "橋梁の範囲が分かる程度の直方体",
+    "tris": 12
+   },
+   {
+    "name": "下部工位置マーカー A1",
+    "category": "概略形状",
+    "first_lod": 100,
+    "note": "下部工の位置",
+    "tris": 40
+   },
+   {
+    "name": "下部工位置マーカー P1",
+    "category": "概略形状",
+    "first_lod": 100,
+    "note": "下部工の位置",
+    "tris": 40
+   },
+   {
+    "name": "下部工位置マーカー A2",
+    "category": "概略形状",
+    "first_lod": 100,
+    "note": "下部工の位置",
+    "tris": 40
+   }
+  ],
+  "200": [
+   {
+    "name": "現況地形 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "地形は詳細度の対象外",
+    "tris": 9322
+   },
+   {
+    "name": "水面 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "河川の水面 (参考)",
+    "tris": 12
+   },
+   {
+    "name": "取付部盛土 (起点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 84
+   },
+   {
+    "name": "取付部盛土 (終点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 76
+   },
+   {
+    "name": "橋梁位置 (中心線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "橋梁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "上部工 (桁+床版を一体化した箱形)",
+    "category": "上部工",
+    "first_lod": 200,
+    "note": "PC桁橋であることが分かる程度の一体形状",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 (概形)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "橋台の概形",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 (概形)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "橋台の概形",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 (概形)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "橋脚の概形",
+    "tris": 12
+   }
+  ],
+  "300": [
+   {
+    "name": "現況地形 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "地形は詳細度の対象外",
+    "tris": 9322
+   },
+   {
+    "name": "水面 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "河川の水面 (参考)",
+    "tris": 12
+   },
+   {
+    "name": "取付部盛土 (起点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 84
+   },
+   {
+    "name": "取付部盛土 (終点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 76
+   },
+   {
+    "name": "橋梁位置 (中心線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "橋梁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第1径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第1径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第2径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第2径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "舗装 (アスファルト t=8cm)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "橋面舗装",
+    "tris": 12
+   },
+   {
+    "name": "地覆 (左)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (左, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "地覆 (右)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (右, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "橋台 A1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋台 A2 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋脚 P1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋脚フーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 躯体 (壁式)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "壁式橋脚",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 梁 (張出し)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋座部",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 場所打ち杭 φ1.0m L=15m (10本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 400
+   },
+   {
+    "name": "支承位置記号 (ゴム支承 ×20)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "支承の位置を記号で表示。詳細度400で実形状",
+    "tris": 240
+   },
+   {
+    "name": "伸縮装置位置記号 (A1)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "伸縮装置の位置を記号で表示",
+    "tris": 12
+   },
+   {
+    "name": "伸縮装置位置記号 (A2)",
+    "category": "記号",
+    "first_lod": 300,
+    "note": "伸縮装置の位置を記号で表示",
+    "tris": 12
+   },
+   {
+    "name": "排水管 φ150 (橋面排水)",
+    "category": "排水工",
+    "first_lod": 300,
+    "note": "橋面排水管",
+    "tris": 384
+   }
+  ],
+  "400": [
+   {
+    "name": "現況地形 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "地形は詳細度の対象外",
+    "tris": 9322
+   },
+   {
+    "name": "水面 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "河川の水面 (参考)",
+    "tris": 12
+   },
+   {
+    "name": "取付部盛土 (起点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 84
+   },
+   {
+    "name": "取付部盛土 (終点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 76
+   },
+   {
+    "name": "橋梁位置 (中心線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "橋梁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第1径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第1径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第2径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第2径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "舗装 (アスファルト t=8cm)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "橋面舗装",
+    "tris": 12
+   },
+   {
+    "name": "地覆 (左)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (左, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "地覆 (右)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (右, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "橋台 A1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋台 A2 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋脚 P1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋脚フーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 躯体 (壁式)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "壁式橋脚",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 梁 (張出し)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋座部",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 場所打ち杭 φ1.0m L=15m (10本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 400
+   },
+   {
+    "name": "排水管 φ150 (橋面排水)",
+    "category": "排水工",
+    "first_lod": 300,
+    "note": "橋面排水管",
+    "tris": 384
+   },
+   {
+    "name": "PC鋼材 (12S12.7 ×30本, 放物線配置)",
+    "category": "PC鋼材",
+    "first_lod": 400,
+    "note": "内ケーブルの配置",
+    "tris": 7380
+   },
+   {
+    "name": "床版鉄筋 (D16@200 / D13@250, 上下2段, 728本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "床版・間詰め部の配筋",
+    "tris": 8736
+   },
+   {
+    "name": "橋台 A1 配筋 (たて壁 D22@250, フーチング D22@250, 192本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "下部工の配筋 (A1 を代表)",
+    "tris": 2304
+   },
+   {
+    "name": "ゴム支承 (×20)",
+    "category": "支承",
+    "first_lod": 400,
+    "note": "支承の実形状",
+    "tris": 720
+   },
+   {
+    "name": "伸縮装置 (A1)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "伸縮装置",
+    "tris": 12
+   },
+   {
+    "name": "伸縮装置 (A2)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "伸縮装置",
+    "tris": 12
+   },
+   {
+    "name": "落橋防止構造 (アンカーバー ×10)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "落橋防止装置",
+    "tris": 240
+   },
+   {
+    "name": "排水桝",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "排水桝",
+    "tris": 144
+   }
+  ],
+  "500": [
+   {
+    "name": "現況地形 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "地形は詳細度の対象外",
+    "tris": 9322
+   },
+   {
+    "name": "水面 (参考)",
+    "category": "地形",
+    "first_lod": 100,
+    "note": "河川の水面 (参考)",
+    "tris": 12
+   },
+   {
+    "name": "取付部盛土 (起点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 84
+   },
+   {
+    "name": "取付部盛土 (終点側, 参考)",
+    "category": "土工",
+    "first_lod": 200,
+    "note": "橋梁前後の取付道路 (参考)",
+    "tris": 76
+   },
+   {
+    "name": "橋梁位置 (中心線)",
+    "category": "線形",
+    "first_lod": 100,
+    "note": "橋梁の位置を示す線",
+    "tris": 20
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第1径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第1径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第1径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第1径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "主桁 G1 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G2 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G3 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G4 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "主桁 G5 (PC T桁 H=1.9m, 第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "主桁の外形 (ポステンT桁)",
+    "tris": 44
+   },
+   {
+    "name": "横桁 端 (第2径間 No.1)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.2)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.3)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 中間 (第2径間 No.4)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "横桁 端 (第2径間 No.5)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "横桁",
+    "tris": 12
+   },
+   {
+    "name": "間詰めコンクリート・床版 (第2径間)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "上フランジ間の間詰めと床版",
+    "tris": 12
+   },
+   {
+    "name": "舗装 (アスファルト t=8cm)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "橋面舗装",
+    "tris": 12
+   },
+   {
+    "name": "地覆 (左)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (左, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "地覆 (右)",
+    "category": "上部工",
+    "first_lod": 300,
+    "note": "地覆",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (右, 支柱31本)",
+    "category": "附属物",
+    "first_lod": 300,
+    "note": "高欄 (車両用防護柵)",
+    "tris": 396
+   },
+   {
+    "name": "橋台 A1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A1 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋台 A2 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "逆T式橋台のフーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 たて壁",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "たて壁 (沓座まで)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 胸壁 (パラペット)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "胸壁",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (左)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 ウイング (右)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "ウイング (簡略)",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 場所打ち杭 φ1.0m L=15m (8本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 320
+   },
+   {
+    "name": "橋脚 P1 フーチング",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋脚フーチング",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 躯体 (壁式)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "壁式橋脚",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 梁 (張出し)",
+    "category": "下部工",
+    "first_lod": 300,
+    "note": "橋座部",
+    "tris": 12
+   },
+   {
+    "name": "橋脚 P1 場所打ち杭 φ1.0m L=15m (10本)",
+    "category": "基礎",
+    "first_lod": 300,
+    "note": "杭基礎",
+    "tris": 400
+   },
+   {
+    "name": "排水管 φ150 (橋面排水)",
+    "category": "排水工",
+    "first_lod": 300,
+    "note": "橋面排水管",
+    "tris": 384
+   },
+   {
+    "name": "PC鋼材 (12S12.7 ×30本, 放物線配置)",
+    "category": "PC鋼材",
+    "first_lod": 400,
+    "note": "内ケーブルの配置",
+    "tris": 7380
+   },
+   {
+    "name": "床版鉄筋 (D16@200 / D13@250, 上下2段, 728本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "床版・間詰め部の配筋",
+    "tris": 8736
+   },
+   {
+    "name": "橋台 A1 配筋 (たて壁 D22@250, フーチング D22@250, 192本)",
+    "category": "配筋",
+    "first_lod": 400,
+    "note": "下部工の配筋 (A1 を代表)",
+    "tris": 2304
+   },
+   {
+    "name": "ゴム支承 (×20)",
+    "category": "支承",
+    "first_lod": 400,
+    "note": "支承の実形状",
+    "tris": 720
+   },
+   {
+    "name": "伸縮装置 (A1)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "伸縮装置",
+    "tris": 12
+   },
+   {
+    "name": "伸縮装置 (A2)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "伸縮装置",
+    "tris": 12
+   },
+   {
+    "name": "落橋防止構造 (アンカーバー ×10)",
+    "category": "附属物",
+    "first_lod": 400,
+    "note": "落橋防止装置",
+    "tris": 240
+   },
+   {
+    "name": "排水桝",
+    "category": "排水工",
+    "first_lod": 400,
+    "note": "排水桝",
+    "tris": 144
+   },
+   {
+    "name": "路面標示 (中央線・外側線)",
+    "category": "完成設備",
+    "first_lod": 500,
+    "note": "完成時の区画線",
+    "tris": 36
+   },
+   {
+    "name": "照明柱 (2基)",
+    "category": "完成設備",
+    "first_lod": 500,
+    "note": "完成時の附属設備",
+    "tris": 88
+   },
+   {
+    "name": "桁のキャンバー出来形 (主桁上面の実測値, 記号)",
+    "category": "出来形",
+    "first_lod": 500,
+    "note": "出来形計測結果を反映する面 (サンプルでは記号)",
+    "tris": 12
+   }
+  ]
+ }
+}

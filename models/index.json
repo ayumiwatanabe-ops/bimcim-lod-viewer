@@ -1,0 +1,51 @@
+[
+ {
+  "id": "tunnel",
+  "name": "山岳トンネル（NATM 2車線）",
+  "category": "トンネル",
+  "description": "延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）。支保パターン DⅢa/DⅡ/DⅠ の配置例、非常駐車帯、坑門工、補助工法を含む。",
+  "thumb": "models/tunnel/thumb.jpg"
+ },
+ {
+  "id": "earthwork",
+  "name": "道路土工（切土・盛土）",
+  "category": "土工",
+  "description": "2車線道路 (幅員9.5m) を架空地形に通した区間 240m。起点側が切土 (1:1.0, 小段1.5m@5m)、終点側が盛土 (1:1.5)。舗装4層、法尻側溝、法面保護工 (吹付法枠・植生)、小段排水、縦排水、ガードレールを含む。",
+  "thumb": "models/earthwork/thumb.jpg"
+ },
+ {
+  "id": "pcbridge",
+  "name": "PC橋（ポステンT桁 2径間）",
+  "category": "橋梁",
+  "description": "橋長61m (支間30m×2)、幅員10.0m。PC T桁5本、逆T式橋台2基、壁式橋脚1基、場所打ち杭。支承・伸縮装置・高欄・排水、PC鋼材・配筋を含む。",
+  "thumb": "models/pcbridge/thumb.jpg"
+ },
+ {
+  "id": "boxculvert",
+  "name": "BOXカルバート（1連 3.0×2.5m）",
+  "category": "カルバート",
+  "description": "道路盛土を横断する水路用ボックスカルバート、延長40m (10mブロック×4)。頂版・底版0.35m、側壁0.30m、ハンチ、両端ウイング (八の字)、取付水路、基礎、目地・止水板、配筋を含む。",
+  "thumb": "models/boxculvert/thumb.jpg"
+ },
+ {
+  "id": "retwall",
+  "name": "擁壁（逆T式 H=5m + 重力式 H=2m）",
+  "category": "擁壁",
+  "description": "逆T式RC擁壁 (H=5.0m, 底版幅3.9m) 30m (10mブロック×3) と重力式擁壁 (H=2.0m, 天端0.4m, 背面1:0.6) 10m。基礎、目地・止水板、水抜き孔、裏込め・透水マット、配筋、天端防護柵を含む。",
+  "thumb": "models/retwall/thumb.jpg"
+ },
+ {
+  "id": "conduit",
+  "name": "電線共同溝（管路部・特殊部）",
+  "category": "電線共同溝",
+  "description": "歩道下の管路部 240m。電力 単管路方式 6条 (φ100/φ125)、通信 共用FA方式 (ボディ管φ200・FA管φ150・副管φ75×3)、電力/通信ハンドホール各3基、引込管6箇所、横断管、地上機器を含む。",
+  "thumb": "models/conduit/thumb.jpg"
+ },
+ {
+  "id": "slope",
+  "name": "法枠工・鉄筋挿入工・かご工",
+  "category": "法面工・護岸",
+  "description": "延長60mの切土法面 (1:1.0, H=12m, 小段1.5m) に吹付法枠 300×300 @2.0m、主アンカー D19、鉄筋挿入工 D19 L=4m、ラス網、植生基材吹付、水平排水孔。法尻の渓流護岸にふとんかご 3段 (2.0×1.0×0.5m)、基礎砕石、吸出し防止材。",
+  "thumb": "models/slope/thumb.jpg"
+ }
+]
