@@ -105,6 +105,7 @@
         <div class="row">
           <button type="button" id="wire" aria-pressed="false">ワイヤーフレーム</button>
           <button type="button" id="ghost" aria-pressed="false">覆工を透過</button>
+          <button type="button" id="orbitDir" aria-pressed="true" title="ON: AutoCAD と同じ向き (ドラッグ方向にカメラが動く) / OFF: モデルを掴んで回す向き">回転: AutoCAD風</button>
         </div>
       </div>
       <div class="status" id="status">読み込み中…</div>
@@ -132,7 +133,7 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
-      <p class="note">操作: ドラッグで回転（ドラッグを始めた場所の部材を中心に回ります）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。</p>
+      <p class="note">操作: ドラッグで回転（ドラッグを始めた場所の部材を中心に、AutoCAD と同じ向きに回ります。「回転: AutoCAD風」を OFF にするとモデルを掴んで回す向きになります）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。</p>
     </aside>
   </main>
 </div>
@@ -166,8 +167,14 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 5000);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true; controls.dampingFactor = 0.12;
-controls.rotateSpeed = 0.6; controls.zoomSpeed = 0.9; controls.panSpeed = 0.7;
+controls.zoomSpeed = 0.9; controls.panSpeed = 0.7;
 controls.zoomToCursor = true;               // ホイールはカーソル位置に向かって寄る (回転中心も一緒に近づく)
+// 回転方向: AutoCAD の 3D オービットは「ドラッグ方向にカメラが動く」(= モデルは逆に回る)。three.js 標準は「モデルを掴んで回す」。
+const ROT = 0.6; const orbitBtn = document.getElementById('orbitDir');
+function applyOrbitDir(){ const acad = orbitBtn.getAttribute('aria-pressed') === 'true'; controls.rotateSpeed = acad ? -ROT : ROT; try{ localStorage.setItem('tunnel-orbit-acad', acad ? '1' : '0'); }catch(e){} }
+try{ if (localStorage.getItem('tunnel-orbit-acad') === '0') orbitBtn.setAttribute('aria-pressed','false'); }catch(e){}
+orbitBtn.addEventListener('click', ()=>{ orbitBtn.setAttribute('aria-pressed', String(orbitBtn.getAttribute('aria-pressed') !== 'true')); applyOrbitDir(); });
+applyOrbitDir();
 controls.maxPolarAngle = Math.PI * 0.55;   // 地面の下へ潜り込みすぎない
 controls.minDistance = 0.5; controls.maxDistance = 1500;
 controls.screenSpacePanning = true;
