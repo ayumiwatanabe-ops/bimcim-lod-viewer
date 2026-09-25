@@ -47,7 +47,11 @@ def P(d, text, bold=False, size=None, color=None, italic=False):
 def B(d, items, style="List Bullet"):
     for it in items:
         p = d.add_paragraph(style=style); r = p.add_run(it); set_font(r)
-def N(d, items): B(d, items, "List Number")
+def N(d, items):
+    """番号付きリスト (Word の自動番号は前のリストから連番になるため手動で番号を振る)"""
+    for i, it in enumerate(items, 1):
+        p = d.add_paragraph(); p.paragraph_format.left_indent = Mm(8); p.paragraph_format.first_line_indent = Mm(-6)
+        r = p.add_run(f"{i}. {it}"); set_font(r)
 def NOTE(d, text):
     t = d.add_table(rows=1, cols=1); t.alignment = WD_TABLE_ALIGNMENT.CENTER; c = t.rows[0].cells[0]
     shade(c, "FFF4E5"); p = c.paragraphs[0]; r = p.add_run(text); set_font(r, 10)
@@ -102,7 +106,7 @@ DOCK_ROWS = [
 def common_operation_sections(d, brief=False):
     H(d, "画面の見方")
     IMG(d, os.path.join(SHOTS, "index.png"), 160, "図：入口画面（工種を選ぶ）")
-    IMG(d, os.path.join(SHOTS, "tunnel.png"), 160, "図：ビューア画面（山岳トンネル 詳細度300）")
+    IMG(d, os.path.join(SHOTS, "viewer.png"), 160, "図：ビューア画面（PC橋 詳細度300）")
     TABLE(d, ["位置", "名称", "役割"], [
         ("上部", "タイトル・詳細度ボタン", "選択中の工種名と概要。詳細度100〜500のボタンでモデルを切替。「工種を選ぶ」で入口画面に戻る"),
         ("左端", "ツールドック", "視点・表示・断面カット・感度・ピボット・回転中心・寄る の各機能（下表）"),
@@ -166,10 +170,8 @@ def customer_manual():
     NOTE(d, "オフライン版HTMLを開いてもモデルが表示されない場合は、ブラウザが古いか WebGL が無効になっている可能性があります。Chrome または Edge の最新版でお試しください。ファイルサイズが大きいため、開くまでに数秒〜十数秒かかります。")
     H(d, "2.3 ソース一式をダウンロードしてローカルで動かす（開発者向け）", 2)
     N(d, [f"リポジトリのトップページ（{REPO}）で緑色の「Code」ボタン→「Download ZIP」を選び、解凍します。",
-          "index.html はブラウザの制約により直接ダブルクリックでは動きません。解凍したフォルダで簡易サーバを起動します（Python がある場合）：",
-          ])
-    p = d.add_paragraph(); r = p.add_run("    python -m http.server 8000"); set_font(r, 10); r.font.name = "Consolas"
-    N(d, ["ブラウザで http://localhost:8000/ を開きます。"])
+          "index.html はブラウザの制約により直接ダブルクリックでは動きません（オフライン版HTMLは動きます）。解凍したフォルダでコマンドプロンプトを開き、簡易サーバを起動します（Python がある場合）： python -m http.server 8000",
+          "ブラウザで http://localhost:8000/ を開きます。"])
     H(d, "3. 動作環境")
     TABLE(d, ["項目", "推奨"], [
         ("ブラウザ", "Google Chrome / Microsoft Edge / Safari の最新版（WebGL 対応）"),

@@ -757,7 +757,8 @@ tick();   // 描画ループ開始 (ViewCube など全ての定義が済んで�
 // ================= 工種の選択 / モデル読込 =================
 const entrance = document.getElementById('entrance'); const cards = document.getElementById('cards');
 let INDEX = [];
-function showEntrance(on){ entrance.hidden = !on; }
+function showEntrance(on){ entrance.hidden = !on; entrance.style.top = document.querySelector('header').offsetHeight + 'px'; }
+window.addEventListener('resize', ()=>{ if (!entrance.hidden) entrance.style.top = document.querySelector('header').offsetHeight + 'px'; });
 document.getElementById('pickModel').addEventListener('click', ()=>{ showEntrance(true); });
 async function loadIndex(){
   try{ INDEX = await loadJSON('models/index.json'); }catch(e){ INDEX = []; }
