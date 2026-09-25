@@ -118,6 +118,9 @@
   .card .cat{font-size:11px;letter-spacing:.06em;color:var(--muted)}
   .card .nm{font-weight:700;font-size:14px}
   .card .ds{font-size:12px;color:var(--muted);line-height:1.5}
+  .wip{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;padding:1px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink);vertical-align:middle;margin-left:6px}
+  .card .wip{position:absolute;top:8px;left:8px;margin:0}
+  .card{position:relative}
   .minfo{display:flex;flex-direction:column;gap:6px;font-size:12px}
   .minfo .ref{color:var(--muted);font-size:11.5px}
   .minfo ul{margin:0;padding-left:18px;color:var(--muted);font-size:11.5px}
@@ -664,8 +667,16 @@ function faceTexture(label, hover){
 const FACE_LABEL = ['右', '左', '後', '前', '上', '下'];
 const faceTex = FACE_LABEL.map(l => [faceTexture(l, false), faceTexture(l, true)]);
 const cubeMats = faceTex.map(t => new THREE.MeshLambertMaterial({map: t[0]}));
-const cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), cubeMats); cubeScene.add(cubeMesh);
-cubeScene.add(new THREE.LineSegments(new THREE.EdgesGeometry(cubeMesh.geometry), new THREE.LineBasicMaterial({color: 0x4a5560})));
+// 面ごとに平面を置く: [法線, 文字の上方向]。側面の文字は上が +Z (「前」と同じ向き)、上下面は北 (+Y) が上
+const FACE_DEF = [[[1, 0, 0], [0, 0, 1]], [[-1, 0, 0], [0, 0, 1]], [[0, 1, 0], [0, 0, 1]], [[0, -1, 0], [0, 0, 1]], [[0, 0, 1], [0, 1, 0]], [[0, 0, -1], [0, 1, 0]]];
+const cubeMesh = new THREE.Group(); cubeScene.add(cubeMesh);
+const cubeFaces = FACE_DEF.map((f, i) => {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), cubeMats[i]);
+  const n = new THREE.Vector3(...f[0]), u = new THREE.Vector3(...f[1]), x = new THREE.Vector3().crossVectors(u, n);
+  m.setRotationFromMatrix(new THREE.Matrix4().makeBasis(x, u, n)); m.position.copy(n).multiplyScalar(0.5); m.userData.faceIndex = i;
+  cubeMesh.add(m); return m;
+});
+cubeScene.add(new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({color: 0x4a5560})));
 // 方位リング + N
 const ring = new THREE.Mesh(new THREE.RingGeometry(0.78, 0.86, 48), new THREE.MeshBasicMaterial({color: 0x8d97a3, transparent: true, opacity: 0.7, side: THREE.DoubleSide}));
 ring.position.z = -0.5; cubeScene.add(ring);
@@ -684,7 +695,7 @@ function cubeHit(ev){
   const r = cubeCanvas.getBoundingClientRect();
   cubeNdc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
   cubeRay.setFromCamera(cubeNdc, cubeCam);
-  return cubeRay.intersectObject(cubeMesh)[0] || null;
+  return cubeRay.intersectObjects(cubeFaces)[0] || null;
 }
 function setHover(i){ if (hoverFace === i) return; if (hoverFace >= 0) cubeMats[hoverFace].map = faceTex[hoverFace][0]; hoverFace = i; if (i >= 0) cubeMats[i].map = faceTex[i][1]; cubeMats.forEach(m => m.needsUpdate = true); }
 function snapDirFromPoint(pt){
@@ -718,7 +729,7 @@ cubeCanvas.addEventListener('pointermove', ev=>{
     if (cubeDragged){ orbitBy(ev.clientX - cubeDown.lx, ev.clientY - cubeDown.ly); anim = null; }
     cubeDown.lx = ev.clientX; cubeDown.ly = ev.clientY; return;
   }
-  const hit = cubeHit(ev); setHover(hit ? hit.face.materialIndex : -1);
+  const hit = cubeHit(ev); setHover(hit ? hit.object.userData.faceIndex : -1);
 });
 cubeCanvas.addEventListener('pointerdown', ev=>{ if (ev.button !== 0) return; cubeDown = {x: ev.clientX, y: ev.clientY, lx: ev.clientX, ly: ev.clientY}; cubeDragged = false; cubeCanvas.setPointerCapture(ev.pointerId); cubeCanvas.classList.add('drag'); showPivot(1e9); });
 cubeCanvas.addEventListener('pointerup', ev=>{
@@ -744,7 +755,7 @@ async function loadIndex(){
   cards.innerHTML = '';
   INDEX.forEach(m=>{
     const b = document.createElement('button'); b.type = 'button'; b.className = 'card';
-    b.innerHTML = `<img alt="" src="models/${m.id}/thumb.jpg" loading="lazy"><div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
+    b.innerHTML = `<img alt="" src="models/${m.id}/thumb.jpg" loading="lazy">${m.wip ? '<span class="wip">試作中</span>' : ''}<div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
     b.addEventListener('click', ()=>{ location.hash = m.id; });
     cards.appendChild(b);
   });
@@ -754,7 +765,7 @@ async function loadModel(id){
   try{ mj = await (await fetch(`models/${id}/model.json`)).json(); }catch(e){ status.textContent = `モデル ${id} を読み込めませんでした`; return; }
   try{ sj = await (await fetch(`models/${id}/summary.json`)).json(); }catch(e){ sj = null; }
   MODEL = mj; AL = mj.alignment; summary = sj;
-  document.getElementById('modelTitle').textContent = mj.name; document.getElementById('modelSub').textContent = `${mj.category} / 詳細度別サンプル — ` + (mj.description || '');
+  document.getElementById('modelTitle').innerHTML = mj.name + (mj.wip ? '<span class="wip">試作中</span>' : ''); document.getElementById('modelSub').textContent = `${mj.category} / 詳細度別サンプル — ` + (mj.description || '');
   document.getElementById('modelInfo').innerHTML = `<div class="ref">${mj.ref || ''}</div>` + (mj.notes && mj.notes.length ? '<ul>' + mj.notes.map(n=>`<li>${n}</li>`).join('') + '</ul>' : '');
   GROUND_Z = mj.ground.z; MIN_CAM_Z = GROUND_Z + 0.4;
   ground.position.set(mj.ground.cx, mj.ground.cy, mj.ground.z); ground.scale.setScalar(mj.ground.size / 900);

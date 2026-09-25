@@ -11,6 +11,6 @@ for mid in sorted(os.listdir(mdir), key=lambda x: (ORDER.index(x) if x in ORDER 
     mj = os.path.join(mdir, mid, "model.json")
     if not os.path.exists(mj): continue
     m = json.load(open(mj, encoding="utf-8"))
-    items.append({"id": m["id"], "name": m["name"], "category": m["category"], "description": m["description"], "thumb": f"models/{m['id']}/thumb.jpg"})
+    items.append({"id": m["id"], "name": m["name"], "category": m["category"], "description": m["description"], "thumb": f"models/{m['id']}/thumb.jpg", "wip": bool(m.get("wip", False))})
 json.dump(items, open(os.path.join(mdir, "index.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
 print("index.json:", [i["id"] for i in items])

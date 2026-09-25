@@ -322,7 +322,7 @@ def export_model(parts, out_root, meta, formats=("glb", "obj", "dxf", "ifc")):
         "ground": meta.get("ground", {"cx": float(meta["center"][0]), "cy": float(meta["center"][1]), "z": 0.0, "size": 600}),
         "views": meta["views"], "notes": meta.get("notes", []), "station_label": meta.get("station_label", "No."),
         "lod_def": {str(k): [LOD_COMMON[k], v[0], v[1] if len(v) > 1 else LOD_SHORT[k]] for k, v in meta["lod_def"].items()},
-        "lod_files": {str(l): f"LOD{l}.glb" for l in (100, 200, 300, 400, 500)}, "thumb_hide_ref": bool(meta.get("thumb_hide_ref", False)),
+        "lod_files": {str(l): f"LOD{l}.glb" for l in (100, 200, 300, 400, 500)}, "thumb_hide_ref": bool(meta.get("thumb_hide_ref", False)), "wip": bool(meta.get("wip", False)),
     }
     with open(os.path.join(d, "model.json"), "w", encoding="utf-8") as fh: json.dump(mj, fh, ensure_ascii=False, indent=1)
     return d
