@@ -270,7 +270,10 @@ function buildList(root, lod){
   const groups = {};
   root.traverse(o=>{ if(o.isMesh){ (groups[o.userData.cat] ||= []).push(o); } });
   const cats = Object.keys(groups).sort((a,b)=>(ORDER.indexOf(a)+1||99)-(ORDER.indexOf(b)+1||99));
-  const info = {}; (summary?.lods?.[lod]||[]).forEach(p=>info[p.name]=p);
+  // GLB 内のノード名は記号・空白が置き換えられているので、文字と数字だけに正規化して一覧JSONと照合する
+  const norm = s => (s||'').replace(/[^\p{L}\p{N}]/gu,'');
+  const info = {}; (summary?.lods?.[lod]||[]).forEach(p=>info[norm(p.name)]=p);
+  root.traverse(o=>{ if(o.isMesh){ const p = info[norm(o.userData.name)]; if (p) o.userData.name = p.name; } });
   for (const cat of cats){
     const det = document.createElement('details'); det.className='group'; det.open = true;
     const sum = document.createElement('summary'); sum.innerHTML = `<span>${cat}</span><span class="cnt">${groups[cat].length}</span>`; det.appendChild(sum);
@@ -278,10 +281,11 @@ function buildList(root, lod){
       const id = `it-${lod}-${cat}-${i}`;
       const row = document.createElement('label'); row.className='item'; row.htmlFor=id;
       const c = o.material.color; const sw = `rgb(${Math.round(c.r*255)},${Math.round(c.g*255)},${Math.round(c.b*255)})`;
-      const first = info[o.userData.name]?.first_lod; const tag = (first && first===lod && lod>100) ? `<span class="new">詳細度${lod}で追加</span>` : '';
+      const p = info[norm(o.userData.name)];
+      const first = p?.first_lod; const tag = (first && first===lod && lod>100) ? `<span class="new">詳細度${lod}で追加</span>` : '';
       row.innerHTML = `<input type="checkbox" id="${id}" checked><span class="sw" style="background:${sw}"></span><span class="nm">${o.userData.name}</span>${tag}`;
       row.querySelector('input').addEventListener('change', e=>{ o.visible = e.target.checked; });
-      row.title = info[o.userData.name]?.note || '';
+      row.title = p?.note || '';
       det.appendChild(row);
     });
     list.appendChild(det);
