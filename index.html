@@ -133,7 +133,7 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
-      <p class="note">操作: ドラッグで回転（ドラッグを始めた場所の部材を中心に、AutoCAD と同じ向きに回ります。「回転: AutoCAD風」を OFF にするとモデルを掴んで回す向きになります）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。</p>
+      <p class="note">操作: ドラッグで回転（ドラッグを始めた場所の部材を中心に、AutoCAD と同じ向きに回ります。路面付近の低い視点では、その場で見回す動きになります。「回転: AutoCAD風」を OFF にするとモデルを掴んで回す向きになります）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。</p>
     </aside>
   </main>
 </div>
@@ -175,8 +175,9 @@ function applyOrbitDir(){ const acad = orbitBtn.getAttribute('aria-pressed') ===
 try{ if (localStorage.getItem('tunnel-orbit-acad') === '0') orbitBtn.setAttribute('aria-pressed','false'); }catch(e){}
 orbitBtn.addEventListener('click', ()=>{ orbitBtn.setAttribute('aria-pressed', String(orbitBtn.getAttribute('aria-pressed') !== 'true')); applyOrbitDir(); });
 applyOrbitDir();
-controls.maxPolarAngle = Math.PI * 0.55;   // 地面の下へ潜り込みすぎない
-controls.minDistance = 0.5; controls.maxDistance = 1500;
+controls.maxPolarAngle = Math.PI * 0.995;  // 上下角は制限しない (地面の下へは tick() で高さを直接クランプ)
+controls.minDistance = 0.3; controls.maxDistance = 1500;
+const GROUND_Z = -2.3, MIN_CAM_Z = GROUND_Z + 0.4;
 controls.screenSpacePanning = true;
 scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8a80, 1.2));
 const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(-80, -120, 160); scene.add(sun);
@@ -191,7 +192,11 @@ function resize(){
   if (canvas.width !== w || canvas.height !== h){ renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix(); }
 }
 function bgColor(){ return getComputedStyle(document.documentElement).getPropertyValue('--canvas-bg').trim(); }
-function tick(){ resize(); scene.background = new THREE.Color(bgColor()); controls.update(); renderer.render(scene, camera); requestAnimationFrame(tick); }
+function tick(){
+  resize(); scene.background = new THREE.Color(bgColor()); controls.update();
+  if (camera.position.z < MIN_CAM_Z){ camera.position.z = MIN_CAM_Z; if (controls.target.z < MIN_CAM_Z - 0.01) controls.target.z = MIN_CAM_Z - 0.01; }
+  renderer.render(scene, camera); requestAnimationFrame(tick);
+}
 tick();
 
 // alignment (same as generator): straight 60 / R=500 curve 120 / straight 60, grade 1%
@@ -206,7 +211,7 @@ function lookAt(pos, tgt){ camera.position.copy(pos); controls.target.copy(tgt);
 const VIEWS = {
   all:   ()=>lookAt(new THREE.Vector3(-70,-120,80), new THREE.Vector3(110,15,0)),
   portal:()=>lookAt(new THREE.Vector3(-30,-16,10), new THREE.Vector3(10,1,3)),
-  inside:()=>lookAt(new THREE.Vector3(62,0.5,2), new THREE.Vector3(72,1.1,2.4)),   // 回転中心は 10m 先 (見回し操作向け)
+  inside:()=>lookAt(new THREE.Vector3(62,0.5,2), new THREE.Vector3(67,0.8,2.2)),   // 回転中心は 5m 先 (見回し操作向け)
   section:()=>{ const f=frame(120); clipOn.checked=true; clipPos.value=120; applyClip();
     lookAt(f.p.clone().add(f.t.clone().multiplyScalar(26)).add(f.r.clone().multiplyScalar(-14)).add(new THREE.Vector3(0,0,10)), f.p.clone().add(new THREE.Vector3(0,0,2.5))); },
 };
@@ -224,11 +229,17 @@ function pick(ev){
   return hits[0] || ray.intersectObject(ground)[0] || null;
 }
 // ドラッグ開始時: カーソル下の部材までの距離に合わせて、視線上に回転中心を置く (視点は動かないので画面は跳ばない)
+//  - 視点が低い (路面付近, z<4m) ときは半径を最大 2m に抑え、ほぼその場で首を振る「見回し」動作にする (トンネル内で壁に突っ込まない)
+//  - 空をつかんだとき (当たりなし) や遠すぎるときも半径を抑え、カメラが振り回されないようにする
 canvas.addEventListener('pointerdown', ev=>{
-  if (ev.button !== 0) return;
-  const hit = pick(ev); if (!hit) return;
+  if (ev.button !== 0 || !current) return;
+  const hit = pick(ev);
+  const low = camera.position.z < 4.0;
+  let radius = hit ? hit.distance : 4.0;
+  radius = Math.min(radius, low ? 2.0 : 300.0);
+  radius = Math.max(radius, controls.minDistance + 0.1);
   camera.getWorldDirection(viewDir);
-  controls.target.copy(camera.position).addScaledVector(viewDir, hit.distance);
+  controls.target.copy(camera.position).addScaledVector(viewDir, radius);
   controls.update();
 });
 // ダブルクリック: その点そのものを回転中心にして正面に捉える
