@@ -168,7 +168,7 @@
           <svg viewBox="0 0 24 24"><path d="M4 18V8l8-4 8 4v10l-8 4z"/><path d="M4 8l8 4 8-4M12 12v10" stroke-dasharray="2 2"/><path d="M14 3l7 7" /></svg>
         </button>
         <div class="sep"></div>
-        <button type="button" class="tile" data-pop="popSens" title="回転感度 (1〜6)" aria-expanded="false">
+        <button type="button" class="tile" data-pop="popSens" title="感度 (回転・ズーム, 各1〜6)" aria-expanded="false">
           <svg viewBox="0 0 24 24"><path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16l4-6"/><circle cx="12" cy="16" r="1.4"/><path d="M4 16h2M18 16h2M7 9.5l1 1M17 9.5l-1 1M12 8v1.5"/></svg><span class="lbl" id="sensLbl">3</span>
         </button>
         <button type="button" class="tile" data-pop="popRad" title="ピボット (回転半径の決め方)" aria-expanded="false">
@@ -210,9 +210,10 @@
         <p class="desc">「断面」視点を選ぶと No.120 でカットした状態になります。</p>
       </div>
       <div class="pop" id="popSens" hidden>
-        <h3>回転感度<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
-        <div class="row"><span class="seg2" id="sensSeg"></span></div>
-        <p class="desc">1 が最も穏やか、6 が最も速い。既定は 3。</p>
+        <h3>感度（回転・ズーム）<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
+        <div class="row"><span style="min-width:3.5em">回転</span><span class="seg2" id="sensSeg"></span></div>
+        <div class="row"><span style="min-width:3.5em">ズーム</span><span class="seg2" id="zoomSeg"></span></div>
+        <p class="desc">1 が最も穏やか、6 が最も速い。既定はどちらも 3。ズームはホイール1ノッチあたりの寄る量です。</p>
       </div>
       <div class="pop" id="popRad" hidden>
         <h3>ピボット（回転半径の決め方）<button type="button" class="x" data-close aria-label="閉じる">×</button></h3>
@@ -284,10 +285,18 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 5000);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true; controls.dampingFactor = 0.12;
-controls.zoomSpeed = 0.9; controls.panSpeed = 0.7;
+controls.panSpeed = 0.7;
 controls.zoomToCursor = true;               // ホイールはカーソル位置に向かって寄る (回転中心も一緒に近づく)
 // ---- 回転感度 (6段階) / ピボットの決め方 (固定・自動・半径6段階) / 回転方向 ----
 const SENS = [0.15, 0.25, 0.4, 0.6, 0.9, 1.3];                 // rotateSpeed
+const ZOOM = [0.12, 0.2, 0.3, 0.45, 0.7, 1.0];                  // zoomSpeed (ホイール1ノッチで距離が 0.95^zoomSpeed 倍)
+let zoomIdx = 2;
+try{ const z = +localStorage.getItem('tunnel-zoom'); if (z >= 1 && z <= 6) zoomIdx = z - 1; }catch(e){}
+function applyZoom(){
+  controls.zoomSpeed = ZOOM[zoomIdx];
+  try{ localStorage.setItem('tunnel-zoom', String(zoomIdx + 1)); }catch(e){}
+  document.querySelectorAll('#zoomSeg button').forEach((b,i)=>b.setAttribute('aria-pressed', String(i === zoomIdx)));
+}
 const RAD  = ['fixed', null, 1, 3, 8, 20, 50, 150];            // 'fixed' = 手動で置いた回転中心を動かさない, null = 自動 (ドラッグ開始位置の部材までの距離), 数値 = 視点からの距離 [m]
 const RAD_LABEL = ['固定', '自動', '1m', '3m', '8m', '20m', '50m', '150m'];
 let sensIdx = 2, radIdx = 0;
@@ -312,6 +321,9 @@ function applyRad(retarget){
 }
 const sensSeg = document.getElementById('sensSeg');
 SENS.forEach((v,i)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=String(i+1); b.title=`回転感度 ${i+1} (${v})`; b.addEventListener('click',()=>{ sensIdx=i; applySens(); }); sensSeg.appendChild(b); });
+const zoomSeg = document.getElementById('zoomSeg');
+ZOOM.forEach((v,i)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=String(i+1); b.title=`ズーム感度 ${i+1}`; b.addEventListener('click',()=>{ zoomIdx=i; applyZoom(); }); zoomSeg.appendChild(b); });
+applyZoom();
 const radSeg = document.getElementById('radSeg');
 RAD.forEach((v,i)=>{ const b=document.createElement('button'); b.type='button'; b.textContent=RAD_LABEL[i];
   b.title = v==='fixed' ? '回転中心を動かさない (下の「回転中心」で置いた位置のまま)' : v===null ? 'ドラッグ開始位置の部材までの距離を回転半径にする' : `視点の ${v} m 先を回転中心にする`;

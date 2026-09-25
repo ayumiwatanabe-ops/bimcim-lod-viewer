@@ -49,11 +49,30 @@ def build_parts():
     for x, nm in ((X_A1, "A1"), (X_P1, "P1"), (X_A2, "A2")):
         parts.append(Part(f"下部工位置マーカー {nm}", "概略形状", cylinder([x, 0, ground(x, 0) - 2], [x, 0, Z_BRG], 0.4, 10), C["marker"], 100, "下部工の位置", lod_max=100))
 
-    # ---------- LOD200: 構造形式が分かる程度 ----------
-    parts.append(Part("上部工 (桁+床版を一体化した箱形)", "上部工", box_world(X_A1 - 0.4, X_A2 + 0.4, -W / 2, W / 2, Z_GBOT, Z_DECK), C["girder"], 200, "PC桁橋であることが分かる程度の一体形状", lod_max=200))
-    for x, nm in ((X_A1, "A1"), (X_A2, "A2")):
-        parts.append(Part(f"橋台 {nm} (概形)", "下部工", box_world(x - 1.5, x + 1.5, -W / 2 - 0.5, W / 2 + 0.5, ground(x, 0) - 2.5, Z_BRG), C["sub"], 200, "橋台の概形", lod_max=200))
-    parts.append(Part("橋脚 P1 (概形)", "下部工", box_world(X_P1 - 1.0, X_P1 + 1.0, -4.0, 4.0, ground(X_P1, 0) - 2.5, Z_BRG), C["sub"], 200, "橋脚の概形", lod_max=200))
+    # ---------- LOD200: 構造形式が分かる程度 (桁橋であること・橋台/橋脚の位置と概形・高欄の有無) ----------
+    ys_g200 = [(i - (N_G - 1) / 2) * G_PITCH for i in range(N_G)]
+    parts.append(Part("床版・舗装 (概形, 一体)", "上部工", box_world(X_A1 - 0.4, X_A2 + 0.4, -W / 2, W / 2, Z_GTOP - 0.22, Z_DECK), C["slab"], 200, "床版と舗装を一体化した板", lod_max=200))
+    m = Mesh()
+    for yg in ys_g200: m.add(box_world(X_A1 + 0.3, X_A2 - 0.3, yg - 0.35, yg + 0.35, Z_GBOT, Z_GTOP - 0.22))
+    parts.append(Part("主桁 (概形, 矩形断面 ×5)", "上部工", m, C["girder"], 200, "T桁を矩形の梁として表現 (本数・桁高が分かる程度)", lod_max=200))
+    m = Mesh()
+    for xc in (X_A1 + 0.5, X_P1 - 0.5, X_P1 + 0.5, X_A2 - 0.5): m.add(box_world(xc - 0.15, xc + 0.15, ys_g200[0], ys_g200[-1], Z_GBOT + 0.3, Z_GTOP - 0.22))
+    parts.append(Part("横桁 (概形, 端横桁のみ)", "上部工", m, C["slab"], 200, "", lod_max=200))
+    for sg, nm in ((-1, "左"), (1, "右")):
+        y0, y1 = sorted((sg * (W / 2), sg * (W / 2 - W_CURB)))
+        parts.append(Part(f"地覆 (概形, {nm})", "上部工", box_world(X_A1 - 0.4, X_A2 + 0.4, y0, y1, Z_DECK, Z_DECK + 0.25), C["curb"], 200, "", lod_max=200))
+        m = Mesh()
+        for x in np.arange(X_A1, X_A2 + 0.1, 4.0): m.add(box_world(x - 0.05, x + 0.05, sg * (W / 2 - 0.35) - 0.05, sg * (W / 2 - 0.35) + 0.05, Z_DECK + 0.25, Z_DECK + 1.3))
+        m.add(box_world(X_A1 - 0.4, X_A2 + 0.4, sg * (W / 2 - 0.35) - 0.04, sg * (W / 2 - 0.35) + 0.04, Z_DECK + 1.2, Z_DECK + 1.3))
+        parts.append(Part(f"高欄 (概形, {nm})", "附属物", m, C["rail"], 200, "高欄の有無と高さが分かる程度 (支柱@4m + 上段ビーム)", lod_max=200))
+    for x, nm, back in ((X_A1, "A1", -1), (X_A2, "A2", +1)):
+        zf = ground(x, 0) - 1.5
+        parts.append(Part(f"橋台 {nm} (概形: たて壁+胸壁)", "下部工", box_world(x - 1.0, x + 1.0, -W / 2 - 0.3, W / 2 + 0.3, zf + 1.5, Z_DECK), C["sub"], 200, "橋台の概形", lod_max=200))
+        parts.append(Part(f"橋台 {nm} フーチング (概形)", "下部工", box_world(x - 3.0, x + 3.0, -W / 2 - 0.5, W / 2 + 0.5, zf, zf + 1.5), C["sub"], 200, "", lod_max=200))
+    zf = ground(X_P1, 0) - 1.5
+    parts.append(Part("橋脚 P1 (概形: 柱+梁)", "下部工", Mesh().add(box_world(X_P1 - 1.0, X_P1 + 1.0, -4.0, 4.0, zf + 2.0, Z_BRG - 1.2)).add(box_world(X_P1 - 1.2, X_P1 + 1.2, -W / 2 - 0.2, W / 2 + 0.2, Z_BRG - 1.2, Z_GBOT)), C["sub"], 200, "壁式橋脚の概形", lod_max=200))
+    parts.append(Part("橋脚 P1 フーチング (概形)", "下部工", box_world(X_P1 - 3.5, X_P1 + 3.5, -5.5, 5.5, zf, zf + 2.0), C["sub"], 200, "", lod_max=200))
+    parts.append(Part("基礎 (概形: 杭範囲の直方体)", "基礎", Mesh().add(box_world(X_A1 - 2.3, X_A1 + 2.3, -4.1, 4.1, ground(X_A1, 0) - 16.5, ground(X_A1, 0) - 1.5)).add(box_world(X_A2 - 2.3, X_A2 + 2.3, -4.1, 4.1, ground(X_A2, 0) - 16.5, ground(X_A2, 0) - 1.5)).add(box_world(X_P1 - 2.5, X_P1 + 2.5, -4.5, 4.5, zf - 15.0, zf)), (0.68, 0.66, 0.60, 0.4), 200, "杭基礎の範囲を半透明の直方体で表示", lod_max=200))
 
     # ---------- LOD300: 外形が正確 ----------
     ys_g = [(i - (N_G - 1) / 2) * G_PITCH for i in range(N_G)]
@@ -183,7 +202,7 @@ def meta():
         views=[{"name": "全景", "pos": [-40, -70, 35], "target": [30, 0, -3]}, {"name": "橋台", "pos": [-14, -18, 4], "target": [2, 0, -3]},
                {"name": "桁下", "pos": [20, -12, -6], "target": [32, 0, -3]}, {"name": "断面", "pos": None, "target": None, "clip": 35}],
         lod_def={100: ["橋梁の位置を線・直方体と下部工位置のマーカーで示す。"],
-                 200: ["構造形式が分かる程度。上部工を一体の箱形、橋台・橋脚を概形の直方体で表す。"],
+                 200: ["構造形式が分かる程度。桁 (本数・桁高) と床版を矩形で、地覆・高欄、橋台・橋脚・フーチングを概形で表す。支承・伸縮装置・杭は表現しない (杭は範囲のみ)。"],
                  300: ["主構造の外形が正確なモデル。主桁・横桁・床版・地覆・高欄、橋台 (たて壁・胸壁・ウイング・フーチング)・橋脚・杭の形状。支承・伸縮装置は位置を記号で示す。"],
                  400: ["詳細度300に加えて PC鋼材、床版・橋台の配筋、支承・伸縮装置・落橋防止構造・排水桝などの細部を実形状でモデル化。"],
                  500: ["完成形状 (出来形計測の反映、路面標示、照明柱などの完成設備)。"]},

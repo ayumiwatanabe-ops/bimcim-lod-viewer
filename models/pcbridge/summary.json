@@ -88,32 +88,102 @@
     "tris": 20
    },
    {
-    "name": "上部工 (桁+床版を一体化した箱形)",
+    "name": "床版・舗装 (概形, 一体)",
     "category": "上部工",
     "first_lod": 200,
-    "note": "PC桁橋であることが分かる程度の一体形状",
+    "note": "床版と舗装を一体化した板",
     "tris": 12
    },
    {
-    "name": "橋台 A1 (概形)",
+    "name": "主桁 (概形, 矩形断面 ×5)",
+    "category": "上部工",
+    "first_lod": 200,
+    "note": "T桁を矩形の梁として表現 (本数・桁高が分かる程度)",
+    "tris": 60
+   },
+   {
+    "name": "横桁 (概形, 端横桁のみ)",
+    "category": "上部工",
+    "first_lod": 200,
+    "note": "",
+    "tris": 48
+   },
+   {
+    "name": "地覆 (概形, 左)",
+    "category": "上部工",
+    "first_lod": 200,
+    "note": "",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (概形, 左)",
+    "category": "附属物",
+    "first_lod": 200,
+    "note": "高欄の有無と高さが分かる程度 (支柱@4m + 上段ビーム)",
+    "tris": 204
+   },
+   {
+    "name": "地覆 (概形, 右)",
+    "category": "上部工",
+    "first_lod": 200,
+    "note": "",
+    "tris": 12
+   },
+   {
+    "name": "高欄 (概形, 右)",
+    "category": "附属物",
+    "first_lod": 200,
+    "note": "高欄の有無と高さが分かる程度 (支柱@4m + 上段ビーム)",
+    "tris": 204
+   },
+   {
+    "name": "橋台 A1 (概形: たて壁+胸壁)",
     "category": "下部工",
     "first_lod": 200,
     "note": "橋台の概形",
     "tris": 12
    },
    {
-    "name": "橋台 A2 (概形)",
+    "name": "橋台 A1 フーチング (概形)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "",
+    "tris": 12
+   },
+   {
+    "name": "橋台 A2 (概形: たて壁+胸壁)",
     "category": "下部工",
     "first_lod": 200,
     "note": "橋台の概形",
     "tris": 12
    },
    {
-    "name": "橋脚 P1 (概形)",
+    "name": "橋台 A2 フーチング (概形)",
     "category": "下部工",
     "first_lod": 200,
-    "note": "橋脚の概形",
+    "note": "",
     "tris": 12
+   },
+   {
+    "name": "橋脚 P1 (概形: 柱+梁)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "壁式橋脚の概形",
+    "tris": 24
+   },
+   {
+    "name": "橋脚 P1 フーチング (概形)",
+    "category": "下部工",
+    "first_lod": 200,
+    "note": "",
+    "tris": 12
+   },
+   {
+    "name": "基礎 (概形: 杭範囲の直方体)",
+    "category": "基礎",
+    "first_lod": 200,
+    "note": "杭基礎の範囲を半透明の直方体で表示",
+    "tris": 36
    }
   ],
   "300": [
