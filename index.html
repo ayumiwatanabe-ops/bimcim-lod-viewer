@@ -132,7 +132,7 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
-      <p class="note">操作: ドラッグで回転、ホイールで拡大縮小、右ドラッグで移動。<b>ダブルクリック</b>した場所が回転の中心になります（拡大して見たい部材を先にダブルクリックすると回しやすくなります）。</p>
+      <p class="note">操作: ドラッグで回転（ドラッグを始めた場所の部材を中心に回ります）、ホイールでカーソル位置に向かって拡大縮小、右ドラッグで移動。ダブルクリックでその点を画面中央の回転中心にします。</p>
     </aside>
   </main>
 </div>
@@ -166,7 +166,8 @@ const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, 1, 0.5, 5000);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true; controls.dampingFactor = 0.12;
-controls.rotateSpeed = 0.4; controls.zoomSpeed = 0.8; controls.panSpeed = 0.6;
+controls.rotateSpeed = 0.6; controls.zoomSpeed = 0.9; controls.panSpeed = 0.7;
+controls.zoomToCursor = true;               // ホイールはカーソル位置に向かって寄る (回転中心も一緒に近づく)
 controls.maxPolarAngle = Math.PI * 0.55;   // 地面の下へ潜り込みすぎない
 controls.minDistance = 0.5; controls.maxDistance = 1500;
 controls.screenSpacePanning = true;
@@ -205,16 +206,29 @@ const VIEWS = {
 VIEWS.all();
 document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>VIEWS[b.dataset.view]()));
 
-// ダブルクリックした点を回転の中心 (ピボット) にする。カメラ位置は動かさない
-const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2();
-canvas.addEventListener('dblclick', ev=>{
-  if (!current) return;
+// --- 回転中心 (ピボット) の自動設定 ---
+const ray = new THREE.Raycaster(); const ndc = new THREE.Vector2(); const viewDir = new THREE.Vector3();
+function pick(ev){
+  if (!current) return null;
   const r = canvas.getBoundingClientRect();
   ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
   ray.setFromCamera(ndc, camera);
   const hits = ray.intersectObject(current, true).filter(h => h.object.visible && (h.object.material.opacity ?? 1) > 0.5);
-  const hit = hits[0] || ray.intersectObject(ground)[0];
-  if (hit){ controls.target.copy(hit.point); controls.update(); status.textContent = `回転中心を設定 (No.${nearestStation(hit.point)} 付近)`; }
+  return hits[0] || ray.intersectObject(ground)[0] || null;
+}
+// ドラッグ開始時: カーソル下の部材までの距離に合わせて、視線上に回転中心を置く (視点は動かないので画面は跳ばない)
+canvas.addEventListener('pointerdown', ev=>{
+  if (ev.button !== 0) return;
+  const hit = pick(ev); if (!hit) return;
+  camera.getWorldDirection(viewDir);
+  controls.target.copy(camera.position).addScaledVector(viewDir, hit.distance);
+  controls.update();
+});
+// ダブルクリック: その点そのものを回転中心にして正面に捉える
+canvas.addEventListener('dblclick', ev=>{
+  const hit = pick(ev); if (!hit) return;
+  controls.target.copy(hit.point); controls.update();
+  status.textContent = `回転中心を設定 (No.${nearestStation(hit.point)} 付近)`;
 });
 function nearestStation(p){ let best=0, bd=1e9; for (let s=0; s<=240; s+=2){ const d=frame(s).p.distanceTo(p); if(d<bd){bd=d;best=s;} } return best; }
 
