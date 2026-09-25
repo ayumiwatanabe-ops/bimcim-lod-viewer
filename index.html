@@ -68,7 +68,14 @@
   .tb svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
   .tb[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
   canvas.picking{cursor:crosshair}
-  .status{position:absolute;right:12px;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted);max-width:60%}
+  .status{position:absolute;left:62px;top:12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font-size:12px;color:var(--muted);max-width:calc(100% - 220px)}
+  .cubewrap{position:absolute;right:10px;top:8px;display:flex;flex-direction:column;align-items:center;gap:0;z-index:3}
+  #cube{width:124px;height:124px;cursor:grab;touch-action:none}
+  #cube.drag{cursor:grabbing}
+  .home{width:34px;height:30px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--text);display:grid;place-items:center;cursor:pointer;margin-top:-6px}
+  .home svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .home:hover{background:var(--panel2)}
+  @media (max-width:900px){ #cube{width:96px;height:96px} }
   .pivotinfo{position:absolute;left:12px;bottom:10px;background:color-mix(in srgb,var(--panel) 80%,transparent);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted);pointer-events:none}
   aside{background:var(--panel);border-left:1px solid var(--line);overflow:auto;padding:14px 16px 24px;display:flex;flex-direction:column;gap:14px;min-height:0}
   .lodhead{display:flex;align-items:baseline;gap:10px}
@@ -204,6 +211,10 @@
         <p class="desc">ダブルクリックでも回転中心を置けます。オレンジの玉と地面への垂線が現在の回転中心です。</p>
       </div>
       <div class="status" id="status">読み込み中…</div>
+      <div class="cubewrap">
+        <canvas id="cube" width="248" height="248" title="ドラッグで視点を回転 / 面・辺・角をクリックでその方向から見る"></canvas>
+        <button type="button" class="home" id="homeBtn" title="ホーム視点に戻る (全景 + 回転中心をトンネル中央へ)"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></button>
+      </div>
       <div class="pivotinfo mono" id="pivotInfo"></div>
     </div>
     <aside>
@@ -224,6 +235,7 @@
         <span><i style="background:#F28C1A"></i>ロックボルト</span><span><i style="background:#3359BF"></i>鋼製支保工</span><span><i style="background:#B33326"></i>配筋</span>
       </div>
       <p class="note">延長240m・2車線の汎用断面（3心円 R1=5.15m/R2=8.0m, 覆工30cm）を、直線60m + R=500m曲線120m + 直線60m、縦断勾配+1.0%の線形に沿って生成。支保パターンはDⅢa(坑口部30m)・DⅡ・DⅠの配置例。実案件の寸法・線形は使用していません。</p>
+      <p class="note"><b>ViewCube（右上）</b>: キューブをドラッグすると視点が回ります。面（上・下・前・後・左・右）や辺・角をクリックすると、その方向から見た視点にスナップします。「上」を押すと平面図のように真上から（北が画面上）。下のホームボタンで全景に戻ります。</p>
       <p class="note"><b>操作</b>: ドラッグで回転（AutoCAD と同じく、ドラッグした方向にモデルが回ります）、ホイールで拡大縮小、右ドラッグで移動。左端のアイコンから、視点・表示・断面カット・回転感度・ピボット・回転中心の設定を開けます。一番上の「≡」でアイコン列を折りたためます。</p>
       <p class="note"><b>指定した点へ寄る</b>（虫めがねのアイコン）: 押してからモデル上の点をクリックすると、その点を回転中心にして視点が寄ります。繰り返すと段階的に近づきます。Shift＋ダブルクリックでも同じです。</p>
       <p class="note"><b>回転中心</b>（十字のアイコン）: 「クリックで指定」「測点に置く」「トンネル中央」で回転中心を置き、「中心へ寄る」でその 30 m 手前に視点を戻せます。オレンジの玉と地面への垂線が現在の回転中心で、画面左下に位置を表示します。迷子になったら「トンネル中央」→「中心へ寄る」、または視点の「全景」。</p>
@@ -365,11 +377,11 @@ function resize(){
 function bgColor(){ return getComputedStyle(document.documentElement).getPropertyValue('--canvas-bg').trim(); }
 function tick(){
   resize(); scene.background = new THREE.Color(bgColor()); stepAnim(); controls.update();
-  if (camera.position.z < MIN_CAM_Z){ camera.position.z = MIN_CAM_Z; if (controls.target.z < MIN_CAM_Z - 0.01) controls.target.z = MIN_CAM_Z - 0.01; }
   updatePivotMark();
-  renderer.render(scene, camera); requestAnimationFrame(tick);
+  renderer.render(scene, camera);
+  if (typeof renderCube === 'function') renderCube();
+  requestAnimationFrame(tick);
 }
-tick();
 
 // alignment (same as generator): straight 60 / R=500 curve 120 / straight 60, grade 1%
 function frame(s){
@@ -573,7 +585,94 @@ function buildList(root, lod){
 }
 
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>showLOD(+b.dataset.lod)));
+// ================= ViewCube (Civil 3D 風) =================
+const cubeCanvas = document.getElementById('cube');
+const cubeRenderer = new THREE.WebGLRenderer({canvas: cubeCanvas, alpha: true, antialias: true});
+cubeRenderer.setPixelRatio(Math.min(devicePixelRatio, 2)); cubeRenderer.setSize(cubeCanvas.clientWidth || 124, cubeCanvas.clientHeight || 124, false);
+const cubeScene = new THREE.Scene();
+const cubeCam = new THREE.PerspectiveCamera(32, 1, 0.1, 50); cubeCam.up.set(0, 0, 1);
+cubeScene.add(new THREE.HemisphereLight(0xffffff, 0x888888, 1.4));
+const cl = new THREE.DirectionalLight(0xffffff, 0.8); cl.position.set(2, -3, 4); cubeScene.add(cl);
+function faceTexture(label, hover){
+  const c = document.createElement('canvas'); c.width = c.height = 128; const g = c.getContext('2d');
+  g.fillStyle = hover ? '#f0a06a' : '#e4e8ec'; g.fillRect(0, 0, 128, 128);
+  g.strokeStyle = '#8d97a3'; g.lineWidth = 6; g.strokeRect(3, 3, 122, 122);
+  g.fillStyle = '#1e262e'; g.font = 'bold 44px "Noto Sans JP", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(label, 64, 66);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+// BoxGeometry の面順: +X, -X, +Y, -Y, +Z, -Z
+const FACE_LABEL = ['右', '左', '後', '前', '上', '下'];
+const faceTex = FACE_LABEL.map(l => [faceTexture(l, false), faceTexture(l, true)]);
+const cubeMats = faceTex.map(t => new THREE.MeshLambertMaterial({map: t[0]}));
+const cubeMesh = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), cubeMats); cubeScene.add(cubeMesh);
+cubeScene.add(new THREE.LineSegments(new THREE.EdgesGeometry(cubeMesh.geometry), new THREE.LineBasicMaterial({color: 0x4a5560})));
+// 方位リング + N
+const ring = new THREE.Mesh(new THREE.RingGeometry(0.78, 0.86, 48), new THREE.MeshBasicMaterial({color: 0x8d97a3, transparent: true, opacity: 0.7, side: THREE.DoubleSide}));
+ring.position.z = -0.5; cubeScene.add(ring);
+(function(){ const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'); g.fillStyle = '#d9661c'; g.font = 'bold 44px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('N', 32, 34);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(c), transparent: true, depthTest: false})); s.scale.setScalar(0.34); s.position.set(0, 0.98, -0.5); cubeScene.add(s); })();
+function renderCube(){
+  const dir = camera.position.clone().sub(controls.target); if (dir.lengthSq() < 1e-6) return; dir.normalize();
+  cubeCam.position.copy(dir).multiplyScalar(3.4); cubeCam.lookAt(0, 0, 0);
+  const w = cubeCanvas.clientWidth, hh = cubeCanvas.clientHeight; if (w && hh && (cubeCanvas.width !== w * cubeRenderer.getPixelRatio())) cubeRenderer.setSize(w, hh, false);
+  cubeRenderer.render(cubeScene, cubeCam);
+}
+// ---- キューブ操作: クリックでスナップ / ドラッグで回転 ----
+const cubeRay = new THREE.Raycaster(); const cubeNdc = new THREE.Vector2();
+let hoverFace = -1, cubeDown = null, cubeDragged = false;
+function cubeHit(ev){
+  const r = cubeCanvas.getBoundingClientRect();
+  cubeNdc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  cubeRay.setFromCamera(cubeNdc, cubeCam);
+  return cubeRay.intersectObject(cubeMesh)[0] || null;
+}
+function setHover(i){ if (hoverFace === i) return; if (hoverFace >= 0) cubeMats[hoverFace].map = faceTex[hoverFace][0]; hoverFace = i; if (i >= 0) cubeMats[i].map = faceTex[i][1]; cubeMats.forEach(m => m.needsUpdate = true); }
+function snapDirFromPoint(pt){
+  // 面: 1軸, 辺: 2軸, 角: 3軸 (|座標| が 0.33 を超えた軸を有効にする)
+  const d = new THREE.Vector3(Math.abs(pt.x) > 0.33 ? Math.sign(pt.x) : 0, Math.abs(pt.y) > 0.33 ? Math.sign(pt.y) : 0, Math.abs(pt.z) > 0.33 ? Math.sign(pt.z) : 0);
+  if (d.lengthSq() === 0) d.copy(pt);
+  return d.normalize();
+}
+function snapView(dir){
+  const d = dir.clone();
+  if (Math.abs(d.z) > 0.999) d.y = -0.002;         // 真上/真下からの視点は北を画面上に
+  d.normalize();
+  const dist = camera.position.distanceTo(controls.target);
+  animateTo({ position: controls.target.clone().addScaledVector(d, dist) }, 400); showPivot(1500);
+  const names = []; if (dir.z > 0.5) names.push('上'); if (dir.z < -0.5) names.push('下'); if (dir.y < -0.5) names.push('前(南)'); if (dir.y > 0.5) names.push('後(北)'); if (dir.x > 0.5) names.push('右(東)'); if (dir.x < -0.5) names.push('左(西)');
+  status.textContent = `${names.join('・')} から見る`;
+}
+// 手動オービット (ドラッグ量 → 方位角・仰角)。向きは「回転: AutoCAD風」設定に合わせる
+const _q = new THREE.Quaternion(), _qi = new THREE.Quaternion(), _sph = new THREE.Spherical(), _off = new THREE.Vector3();
+function orbitBy(dx, dy){
+  const sgn = Math.sign(controls.rotateSpeed) || 1; const k = 0.011;
+  _q.setFromUnitVectors(camera.up, new THREE.Vector3(0, 1, 0)); _qi.copy(_q).invert();
+  _off.copy(camera.position).sub(controls.target).applyQuaternion(_q); _sph.setFromVector3(_off);
+  _sph.theta -= sgn * dx * k; _sph.phi -= sgn * dy * k; _sph.phi = Math.max(0.002, Math.min(Math.PI - 0.002, _sph.phi)); _sph.makeSafe();
+  _off.setFromSpherical(_sph).applyQuaternion(_qi); camera.position.copy(controls.target).add(_off); controls.update();
+}
+cubeCanvas.addEventListener('pointermove', ev=>{
+  if (cubeDown){
+    const dx = ev.clientX - cubeDown.x, dy = ev.clientY - cubeDown.y;
+    if (Math.hypot(dx, dy) > 3) cubeDragged = true;
+    if (cubeDragged){ orbitBy(ev.clientX - cubeDown.lx, ev.clientY - cubeDown.ly); anim = null; }
+    cubeDown.lx = ev.clientX; cubeDown.ly = ev.clientY; return;
+  }
+  const hit = cubeHit(ev); setHover(hit ? hit.face.materialIndex : -1);
+});
+cubeCanvas.addEventListener('pointerdown', ev=>{ if (ev.button !== 0) return; cubeDown = {x: ev.clientX, y: ev.clientY, lx: ev.clientX, ly: ev.clientY}; cubeDragged = false; cubeCanvas.setPointerCapture(ev.pointerId); cubeCanvas.classList.add('drag'); showPivot(1e9); });
+cubeCanvas.addEventListener('pointerup', ev=>{
+  cubeCanvas.classList.remove('drag'); pivotHideAt = performance.now() + 600;
+  if (cubeDown && !cubeDragged){ const hit = cubeHit(ev); if (hit) snapView(snapDirFromPoint(hit.point)); }
+  cubeDown = null;
+});
+cubeCanvas.addEventListener('pointerleave', ()=>{ if (!cubeDown) setHover(-1); });
+cubeCanvas.addEventListener('dblclick', ev=>ev.preventDefault());
+// ホーム: 全景 + 回転中心をトンネル中央へ
+document.getElementById('homeBtn').addEventListener('click', ()=>{ anim = null; VIEWS.all(); controls.target.set(110, 15, 0); controls.update(); showPivot(1500); status.textContent = 'ホーム視点'; });
+
 let start = 300; try{ const v = +localStorage.getItem('tunnel-lod'); if ([100,200,300,400,500].includes(v)) start = v; }catch(e){}
+tick();   // 描画ループ開始 (ViewCube など全ての定義が済んでから)
 showLOD(start);
 </script>
 
