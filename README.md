@@ -26,7 +26,7 @@ IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases)
 
 | 方法 | 入手先 | 用途 |
 |---|---|---|
-| Web版 | `https://<ユーザー名>.github.io/bimcim-lod-viewer/` | PC・スマホ・タブレットでそのまま閲覧 (要インターネット) |
+| Web版 | `https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/` | PC・スマホ・タブレットでそのまま閲覧 (要インターネット) |
 | オフライン版 (1ファイル) | [Releases](../../releases) の `bimcim-lod-viewer_offline.html` (約50MB) | ダブルクリックで開く。ネット接続不要。会議室・現場向け |
 | モデルデータ | [Releases](../../releases) の `<工種ID>_ifc_dxf_obj.zip` | IFC4 / DXF / OBJ を自社のCIMソフトで開く |
 | ソース一式 | 「Code → Download ZIP」 | 開発者向け。`python -m http.server` でローカル起動、スクリプトで再生成 |
