@@ -27,7 +27,7 @@ def rect(y0, y1, z0, z1): return np.array([[y0, z0], [y1, z0], [y1, z1], [y0, z1
 
 def build_parts():
     parts = []
-    C = dict(walk=(0.72, 0.72, 0.70, 0.45), road=(0.30, 0.30, 0.32, 0.55), curb=(0.80, 0.80, 0.78), trench=(0.66, 0.60, 0.48), sand=(0.85, 0.80, 0.62),
+    C = dict(walk=(0.72, 0.72, 0.70, 0.25), road=(0.30, 0.30, 0.32, 0.30), curb=(0.80, 0.80, 0.78, 0.5), trench=(0.66, 0.60, 0.48), sand=(0.85, 0.80, 0.62),
              power=(0.85, 0.30, 0.20), comm=(0.20, 0.45, 0.85), sub=(0.45, 0.70, 0.90), hh=(0.78, 0.78, 0.74), lid=(0.35, 0.35, 0.38),
              sheet=(0.95, 0.85, 0.20), sym=(0.2, 0.6, 0.9, 0.35), box100=(0.3, 0.55, 0.95, 0.35), marker=(0.95, 0.2, 0.2, 0.7),
              rebar=(0.70, 0.20, 0.15), cable=(0.15, 0.15, 0.15), equip=(0.55, 0.60, 0.55), fitting=(0.6, 0.6, 0.65))
@@ -55,8 +55,8 @@ def build_parts():
         col = C["power"] if "電力" in nm else (C["comm"] if "ボディ" in nm or "FA" in nm else C["sub"])
         parts.append(Part(f"{nm} (y={y:+.2f})", "管路 (条別)", sweep(A, lambda s, y=y, z=z, r=r: np.array([[y + r * math.cos(t), z + r * math.sin(t)] for t in np.linspace(0, 2 * math.pi, 10, endpoint=False)]), sts), col, 300, "管条ごとの外形 (管径・配列が正確)"))
     parts.append(Part("管路基礎 (砂 t=10cm) / 埋戻し砂", "土工", sweep(A, lambda s: rect(TRENCH[0], TRENCH[1], TRENCH[2], Z_GL - COVER + 0.05), sts), C["sand"], 300, "管路の砂基礎・砂埋戻し"))
-    parts.append(Part("埋戻し (掘削断面)", "土工", sweep(A, lambda s: rect(*TRENCH), sts), (0.66, 0.60, 0.48, 0.45), 300, "管路部の掘削・埋戻し範囲 (半透明)"))
-    parts.append(Part("歩道舗装復旧 (t=19cm)", "舗装", sweep(A, lambda s: rect(TRENCH[0] - 0.1, TRENCH[1] + 0.1, Z_GL - 0.19, Z_GL + 0.01), sts), (0.60, 0.60, 0.58), 300, "舗装復旧範囲"))
+    parts.append(Part("埋戻し (掘削断面)", "土工", sweep(A, lambda s: rect(*TRENCH), sts), (0.66, 0.60, 0.48, 0.25), 300, "管路部の掘削・埋戻し範囲 (半透明)"))
+    parts.append(Part("歩道舗装復旧 (t=19cm)", "舗装", sweep(A, lambda s: rect(TRENCH[0] - 0.1, TRENCH[1] + 0.1, Z_GL - 0.19, Z_GL + 0.01), sts), (0.60, 0.60, 0.58, 0.35), 300, "舗装復旧範囲 (半透明)"))
     for s in HH_P + HH_C:
         p = s in HH_P; nm = "電力" if p else "通信"; iw, il, ih = (1.2, 2.0, 1.6) if p else (1.0, 1.6, 1.4); t = 0.2
         zb = Z_GL - ih - 2 * t - 0.15; m = Mesh()
@@ -159,7 +159,7 @@ def meta():
         description="歩道下の管路部 240m。電力 単管路方式 6条 (φ100/φ125)、通信 共用FA方式 (ボディ管φ200・FA管φ150・副管φ75×3)、電力/通信ハンドホール各3基、引込管6箇所、横断管、地上機器を含む。詳細度300で管条ごとの管路と躯体、400で継手・スペーサ・配筋・金物。",
         ref="管路配列参考図・土工断面図・ハンドホール構造図の一般的な寸法を参考にした架空配置。実案件の平面・特殊部位置は使用していない。",
         alignment=A, center=[115.0, 8.0, -0.5], ground={"cx": 120, "cy": 20, "z": -2.5, "size": 600},
-        views=[{"name": "全景", "pos": [8, -22, 12], "target": [50, 2, -1]}, {"name": "特殊部", "pos": [30, -6, 2.5], "target": [40, 0, -0.8]},
+        views=[{"name": "全景", "pos": [22, -11, 7], "target": [44, 0.5, -0.8]}, {"name": "特殊部", "pos": [34, -4.5, 2.2], "target": [40, 0, -0.9]},
                {"name": "管路断面", "pos": None, "target": None, "clip": 90}, {"name": "地上機器", "pos": [110, -10, 4], "target": [120, -1, 0]}],
         lod_def={100: ["管路ルートを線で、管路部・特殊部の位置を単純な形状で示す。"],
                  200: ["管路部の標準断面 (掘削断面) をルートに沿ってスイープし、特殊部を概形の直方体で表す。"],
