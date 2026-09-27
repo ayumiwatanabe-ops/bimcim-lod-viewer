@@ -749,7 +749,7 @@ cubeCanvas.addEventListener('pointerup', ev=>{
 cubeCanvas.addEventListener('pointerleave', ()=>{ if (!cubeDown) setHover(-1); });
 cubeCanvas.addEventListener('dblclick', ev=>ev.preventDefault());
 // ホーム: 全景 + 回転中心をトンネル中央へ
-document.getElementById('homeBtn').addEventListener('click', ()=>{ if (!MODEL) return; anim = null; VIEWS.all(); controls.target.set(...MODEL.center); controls.update(); showPivot(1500); status.textContent = 'ホーム視点'; });
+document.getElementById('homeBtn').addEventListener('click', ()=>{ if (!MODEL) return; anim = null; VIEWS.all(); showPivot(1500); status.textContent = 'ホーム視点'; });
 
 let start = 300; try{ const v = +localStorage.getItem('tunnel-lod'); if ([100,200,300,400,500].includes(v)) start = v; }catch(e){}
 tick();   // 描画ループ開始 (ViewCube など全ての定義が済んでから)
@@ -782,7 +782,7 @@ async function loadModel(id){
   grid.position.set(mj.ground.cx, mj.ground.cy, mj.ground.z + 0.05); grid.scale.setScalar(mj.ground.size / 600);
   clipPos.max = Math.round(AL.length); const sec = (mj.views || []).find(v=>v.clip !== undefined && v.clip !== null); clipPos.value = sec ? sec.clip : Math.round(AL.length / 2);
   clipOn.checked = false; applyClip(); pivotAtStBtn.textContent = `測点 ${mj.station_label || 'No.'}${clipPos.value} に置く`;
-  buildViews(); anim = null; VIEWS.all(); controls.target.set(...mj.center); controls.update();
+  buildViews(); anim = null; VIEWS.all();   // 回転中心は視点定義の target のまま (モデル中央にすると視線が中央へ向いてしまう)
   if (current){ scene.remove(current); current = null; }
   showEntrance(false); document.title = `${mj.name} — 詳細度ビューア`;
   showLOD(start);
