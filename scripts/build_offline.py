@@ -54,8 +54,7 @@ h = h[:mod_start] + embed_script + h[mod_start:]
 
 # 3) 外部参照を完全になくす: Google Fonts の link を削除 (PC 標準フォントで表示)。タイトルにオフライン版と明記
 import re
-h = re.sub(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^"]*">
-?', '', h)
+h = re.sub(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com[^"]*">\n?', '', h)
 h = h.replace("<title>BIM/CIM 詳細度サンプルビューア</title>", "<title>BIM/CIM 詳細度サンプルビューア (オフライン版)</title>", 1)
 os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
 open(out, "w", encoding="utf-8").write(h)
