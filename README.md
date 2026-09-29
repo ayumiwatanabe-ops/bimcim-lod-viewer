@@ -28,10 +28,12 @@ IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases)
 |---|---|---|
 | ZIP をダウンロードして使う (推奨) | 緑の「Code」ボタン → **Download ZIP** → 展開 → `ビューア起動.exe` をダブルクリック | PC で使う。Python などのインストール不要。ブラウザが自動で開く |
 | 1ファイルで使う | 展開したフォルダの `bimcim-lod-viewer_offline.html` をダブルクリック | exe を実行できない環境向け。ネット接続不要 |
-| Web版 | `https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/` | PC・スマホ・タブレットでそのまま閲覧 (要インターネット) |
+| Web版 | `https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/` | PC・iPad・スマホでそのまま閲覧。初回表示後は自動でモデルを端末に保存し、オフラインでも動く (PWA) |
+| iPad / iPhone / Android | 上の Web版 URL を Safari / Chrome で開き、共有ボタン → **ホーム画面に追加** | アプリのように起動でき、機内モード・地下でも使える。インストールや Python は不要 |
 | モデルデータ | [Releases](../../releases) の `<工種ID>_ifc_dxf_obj.zip` | IFC4 / DXF / OBJ を自社のCIMソフトで開く |
 
 > **`index.html` を直接ダブルクリックしても動きません** (ブラウザの安全制限でモデルを読み込めないため)。上の `ビューア起動.exe` か `bimcim-lod-viewer_offline.html` を使ってください。
+> **iPad で使う場合**: exe や Python は使えないため Web版を開いてください。ページを開くと約55MBのモデルを端末に保存し (「保存完了」と表示)、以後はオフラインでも動きます。「ホーム画面に追加」しておくと次回からアプリのように1タップで開けます。
 > `ビューア起動.exe` は署名なしのため、初回に Windows の「WindowsによってPCが保護されました」が出ることがあります。「詳細情報」→「実行」で進めます。中身は展開したフォルダを 127.0.0.1 (自分のPC内) で公開してブラウザを開くだけで、通信は外部に出ません。
 
 操作説明書は `docs/` にあります (お客様向け / 社内向け)。スマホ・タブレットは1本指で回転、2本指でピンチ・移動です。
@@ -54,7 +56,8 @@ IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases)
 ```
 ビューア起動.exe       ダブルクリックでローカルサーバを起動しブラウザで index.html を開く (PyInstaller 製)
 bimcim-lod-viewer_offline.html  全モデル同梱の1ファイル版 (ダブルクリックで動く)
-index.html            ビューア (入口画面を含む単一ページ, three.js を CDN から読込)
+index.html            ビューア (入口画面を含む単一ページ, three.js は vendor/ から読込)
+sw.js, manifest.json, icons/, vendor/   PWA 用 (ホーム画面に追加・オフライン動作)。scripts/build_pwa.py が生成
 models/index.json     工種一覧
 models/<ID>/          各工種のモデル (GLB, model.json, summary.json, thumb.jpg, view_LOD300/400.png)
 scripts/lodkit.py     共通ライブラリ (線形・メッシュ・書き出し)
@@ -74,6 +77,7 @@ python -m http.server 8000        # → http://localhost:8000/
 pip install numpy ezdxf ifcopenshell trimesh networkx python-docx
 python scripts/gen_tunnel.py .          # 各 gen_*.py を実行すると models/<ID>/ に書き出し
 python scripts/build_index.py .
+python scripts/build_pages.py site/index.html && python scripts/build_pwa.py site   # ビューア本体と PWA 用ファイル (sw.js のバージョン更新)
 python scripts/build_offline.py . release/bimcim-lod-viewer_offline.html   # オフライン版 (1ファイル)
 ```
 
