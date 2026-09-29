@@ -106,6 +106,12 @@
   header #pickModel{margin-left:auto}
   .entrance{position:absolute;inset:0;top:auto;z-index:20;background:var(--bg);overflow:auto;padding:24px 16px 40px}
   .entrance[hidden]{display:none}
+  .ent-notice{max-width:760px;margin:0 auto 22px;padding:16px 18px;border:1px solid #d9a441;border-radius:10px;background:#3a2c12;color:#f3e2b8;line-height:1.7}
+  .ent-notice h3{margin:0 0 8px;font-size:15px;color:#ffd27a}
+  .ent-notice ol{margin:6px 0 0 20px;padding:0}
+  .ent-notice li{margin:4px 0}
+  .ent-notice code{background:#241b0a;padding:1px 6px;border-radius:4px;color:#ffe6a8}
+  .ent-notice a{color:#8ec5ff}
   .ent-inner{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
   .ent-lead{margin:0;color:var(--muted);max-width:70ch}
   .ent-foot{margin:0;color:var(--muted);font-size:11.5px}
@@ -148,6 +154,7 @@
   </header>
   <div class="entrance" id="entrance">
     <div class="ent-inner">
+      <div class="ent-notice" id="entNotice" hidden></div>
       <p class="ent-lead">工種を選ぶと、その汎用サンプルモデルを詳細度100〜500で切り替えて確認できます。すべて架空の寸法・線形で作成しており、実案件のデータは含みません。</p>
       <div class="cards" id="cards"></div>
       <p class="ent-foot">出典: 国土交通省「BIM/CIM活用ガイドライン(案) 第1編 共通編」表1-2 (令和4年3月)。山岳トンネル以外の工種別定義文は共通定義に基づく本サンプルでの適用例です。</p>
@@ -763,6 +770,23 @@ document.getElementById('pickModel').addEventListener('click', ()=>{ showEntranc
 async function loadIndex(){
   try{ INDEX = await loadJSON('models/index.json'); }catch(e){ INDEX = []; }
   cards.innerHTML = '';
+  const notice = document.getElementById('entNotice');
+  if (!INDEX.length){
+    const isFile = location.protocol === 'file:';
+    notice.hidden = false;
+    notice.innerHTML = isFile
+      ? `<h3>この index.html を直接開いても動きません</h3>
+         ブラウザの安全制限により、ファイルを直接開いた状態ではモデルを読み込めません。同じフォルダにある次のどちらかを使ってください。
+         <ol>
+           <li><b>Windows:</b> <code>ビューア起動.exe</code> をダブルクリック (ブラウザが自動で開きます)</li>
+           <li><b>Mac / exe を使えない場合:</b> <a href="bimcim-lod-viewer_offline.html">bimcim-lod-viewer_offline.html</a> をダブルクリック (全モデル同梱、ネット不要)</li>
+         </ol>
+         Web版: <a href="https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/">https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/</a>`
+      : `<h3>工種一覧 (models/index.json) を読み込めませんでした</h3>
+         index.html と同じ場所に models フォルダがあるか確認してください。`;
+    return;
+  }
+  notice.hidden = true;
   INDEX.forEach(m=>{
     const b = document.createElement('button'); b.type = 'button'; b.className = 'card';
     b.innerHTML = `<img alt="" src="${assetURL(`models/${m.id}/thumb.jpg`)}" loading="lazy">${m.wip ? '<span class="wip">試作中</span>' : ''}<div class="cb"><span class="cat">${m.category}</span><span class="nm">${m.name}</span><span class="ds">${m.description}</span></div>`;
