@@ -26,10 +26,13 @@ IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases)
 
 | 方法 | 入手先 | 用途 |
 |---|---|---|
+| ZIP をダウンロードして使う (推奨) | 緑の「Code」ボタン → **Download ZIP** → 展開 → `ビューア起動.exe` をダブルクリック | PC で使う。Python などのインストール不要。ブラウザが自動で開く |
+| 1ファイルで使う | 展開したフォルダの `bimcim-lod-viewer_offline.html` をダブルクリック | exe を実行できない環境向け。ネット接続不要 |
 | Web版 | `https://ayumiwatanabe-ops.github.io/bimcim-lod-viewer/` | PC・スマホ・タブレットでそのまま閲覧 (要インターネット) |
-| オフライン版 (1ファイル) | [Releases](../../releases) の `bimcim-lod-viewer_offline.html` (約50MB) | ダブルクリックで開く。ネット接続不要。会議室・現場向け |
 | モデルデータ | [Releases](../../releases) の `<工種ID>_ifc_dxf_obj.zip` | IFC4 / DXF / OBJ を自社のCIMソフトで開く |
-| ソース一式 | 「Code → Download ZIP」 | 開発者向け。`python -m http.server` でローカル起動、スクリプトで再生成 |
+
+> **`index.html` を直接ダブルクリックしても動きません** (ブラウザの安全制限でモデルを読み込めないため)。上の `ビューア起動.exe` か `bimcim-lod-viewer_offline.html` を使ってください。
+> `ビューア起動.exe` は署名なしのため、初回に Windows の「WindowsによってPCが保護されました」が出ることがあります。「詳細情報」→「実行」で進めます。中身は展開したフォルダを 127.0.0.1 (自分のPC内) で公開してブラウザを開くだけで、通信は外部に出ません。
 
 操作説明書は `docs/` にあります (お客様向け / 社内向け)。スマホ・タブレットは1本指で回転、2本指でピンチ・移動です。
 
@@ -49,12 +52,14 @@ IFC4 / DXF / OBJ 形式はサイズが大きいため [Releases](../../releases)
 ## ファイル構成
 
 ```
+ビューア起動.exe       ダブルクリックでローカルサーバを起動しブラウザで index.html を開く (PyInstaller 製)
+bimcim-lod-viewer_offline.html  全モデル同梱の1ファイル版 (ダブルクリックで動く)
 index.html            ビューア (入口画面を含む単一ページ, three.js を CDN から読込)
 models/index.json     工種一覧
 models/<ID>/          各工種のモデル (GLB, model.json, summary.json, thumb.jpg, view_LOD300/400.png)
 scripts/lodkit.py     共通ライブラリ (線形・メッシュ・書き出し)
 scripts/gen_*.py      工種別の生成スクリプト
-scripts/build_index.py, build_pages.py, render_thumbs.py, build_offline.py (オフライン版), build_manuals.py (説明書)
+scripts/build_index.py, build_pages.py, render_thumbs.py, build_offline.py (オフライン版), build_manuals.py (説明書), launcher.py (ビューア起動.exe の元)
 scripts/vendor/      three.js (オフライン版に同梱)
 docs/                操作説明書 (docx / pdf)
 ```
