@@ -1,6 +1,6 @@
 /* BIM/CIM 詳細度サンプルビューア service worker (build_pwa.py が生成)
    初回表示後にモデルをまとめてキャッシュし、以後はオフライン (機内モード・地下) でも動く。 */
-const VERSION = '4d75314ae3';
+const VERSION = 'b14c9af6e2';
 const CACHE = 'bimcim-lod-' + VERSION;
 const CORE = ["./", "./icons/apple-touch-icon.png", "./icons/icon-192.png", "./icons/icon-512.png", "./index.html", "./manifest.json", "./models/boxculvert/thumb.jpg", "./models/conduit/thumb.jpg", "./models/earthwork/thumb.jpg", "./models/index.json", "./models/pcbridge/thumb.jpg", "./models/retwall/thumb.jpg", "./models/slope/thumb.jpg", "./models/tunnel/thumb.jpg", "./vendor/jsm/controls/OrbitControls.js", "./vendor/jsm/loaders/GLTFLoader.js", "./vendor/jsm/utils/BufferGeometryUtils.js", "./vendor/three.module.js"];
 const MODELS = [
@@ -12,7 +12,6 @@ const MODELS = [
 "./models/boxculvert/model.json",
 "./models/boxculvert/summary.json",
 "./models/boxculvert/view_LOD300.png",
-"./models/boxculvert/view_LOD300_portal.png",
 "./models/boxculvert/view_LOD400.png",
 "./models/conduit/LOD100.glb",
 "./models/conduit/LOD200.glb",
@@ -70,7 +69,7 @@ const MODELS = [
 "./models/tunnel/view_LOD300.png",
 "./models/tunnel/view_LOD400.png"
 ];
-const TOTAL_MB = 56;
+const TOTAL_MB = 55;
 
 async function broadcast(msg){ for (const c of await self.clients.matchAll({ includeUncontrolled: true })) c.postMessage(msg); }
 
@@ -95,15 +94,16 @@ async function precacheModels(){
   if (precaching) return; precaching = true;
   try{
     const c = await caches.open(CACHE);
-    let done = 0;
+    let done = 0, failed = 0;
     for (const u of MODELS){
       if (!(await c.match(u))){
         try{ const r = await fetch(new Request(u, { cache: 'reload' })); if (r.ok) await c.put(u, r); else throw new Error(u); }
-        catch(err){ await broadcast({ type: 'precache-error', done, total: MODELS.length }); return; }
+        catch(err){ failed++; if (failed >= 5){ await broadcast({ type: 'precache-error', done, total: MODELS.length }); return; } continue; }
       }
       done++; await broadcast({ type: 'precache', done, total: MODELS.length, mb: TOTAL_MB });
     }
-    await broadcast({ type: 'precache-done', total: MODELS.length, mb: TOTAL_MB });
+    if (failed) await broadcast({ type: 'precache-error', done, total: MODELS.length });
+    else await broadcast({ type: 'precache-done', total: MODELS.length, mb: TOTAL_MB });
   } finally { precaching = false; }
 }
 

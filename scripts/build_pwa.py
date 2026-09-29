@@ -104,15 +104,16 @@ async function precacheModels(){
   if (precaching) return; precaching = true;
   try{
     const c = await caches.open(CACHE);
-    let done = 0;
+    let done = 0, failed = 0;
     for (const u of MODELS){
       if (!(await c.match(u))){
         try{ const r = await fetch(new Request(u, { cache: 'reload' })); if (r.ok) await c.put(u, r); else throw new Error(u); }
-        catch(err){ await broadcast({ type: 'precache-error', done, total: MODELS.length }); return; }
+        catch(err){ failed++; if (failed >= 5){ await broadcast({ type: 'precache-error', done, total: MODELS.length }); return; } continue; }
       }
       done++; await broadcast({ type: 'precache', done, total: MODELS.length, mb: TOTAL_MB });
     }
-    await broadcast({ type: 'precache-done', total: MODELS.length, mb: TOTAL_MB });
+    if (failed) await broadcast({ type: 'precache-error', done, total: MODELS.length });
+    else await broadcast({ type: 'precache-done', total: MODELS.length, mb: TOTAL_MB });
   } finally { precaching = false; }
 }
 
